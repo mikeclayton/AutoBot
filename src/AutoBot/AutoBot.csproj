@@ -88,6 +88,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="Scripts\Get-Test.psm1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Scripts\Get-Help.psm1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

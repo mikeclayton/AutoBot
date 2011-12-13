@@ -20,6 +20,13 @@ namespace AutoBot.Host
 
         #endregion
 
+        #region Events
+
+        public delegate void WriteHandler(object sender, string value);
+        public event WriteHandler OnWrite;
+
+        #endregion
+
         #region PSHostUserInterface Members
 
         #region Input Methods
@@ -75,6 +82,7 @@ namespace AutoBot.Host
         public override void Write(ConsoleColor foregroundColor, ConsoleColor backgroundColor, string value)
         {
             _logger.Info(value);
+            this.OnWrite(this, value);
         }
 
         public override void Write(string value)

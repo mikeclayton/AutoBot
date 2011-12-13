@@ -13,7 +13,6 @@ namespace AutoBot
     {
 
         private static readonly HipChatSession Session = new HipChatSession();
-        private static readonly PowerShellRunner PowershellRunner;
         private static readonly ILog Logger = LogManager.GetLogger(typeof(BotEngine));
                 
         static BotEngine()
@@ -27,7 +26,6 @@ namespace AutoBot
             Session.SubscribedRooms = ConfigurationManager.AppSettings["HipChatRooms"];
             Session.OnMessageReceived += Session_OnMessageReceived;
                        
-            PowershellRunner = new PowerShellRunner();            
         }
 
         public static void SetupChatConnection()
@@ -58,7 +56,9 @@ namespace AutoBot
             // ensure the message is intended for AutoBot
             chatText = RemoveMentionFromMessage(chatText);
             PowerShellCommand powerShellCommand = BuildPowerShellCommand(chatText);
-            Collection<PSObject> psObjects = PowershellRunner.RunPowerShellModule(powerShellCommand.CommandText,
+
+            var runner = new PowerShellRunner(Session, message.Type, responseJid);
+            Collection<PSObject> psObjects = runner.RunPowerShellModule(powerShellCommand.CommandText,
                                                                             powerShellCommand.ParameterText);
             SendResponse(responseJid, psObjects, message.Type);
         }
@@ -123,7 +123,8 @@ namespace AutoBot
             if (message != string.Empty)
             {
                 PowerShellCommand powerShellCommand = BuildPowerShellCommand(message);
-                Collection<PSObject> psObjects = PowershellRunner.RunPowerShellModule(powerShellCommand.CommandText,
+                var runner = new PowerShellRunner(Session, messageType, replyTo);
+                Collection<PSObject> psObjects = runner.RunPowerShellModule(powerShellCommand.CommandText,
                                                                                 powerShellCommand.ParameterText);
                 SendResponse(replyTo, psObjects, messageType);
             }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using jabber.protocol.client;
+using System;
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -13,6 +14,18 @@ namespace AutoBot
         private readonly string _scriptsPath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "Scripts");
         private readonly ILog _logger = LogManager.GetLogger(typeof(Program));
 
+        private HipChatSession m_Session;
+        private MessageType m_MessageType;
+        private string m_ReplyTo;
+
+        internal PowerShellRunner(HipChatSession session, MessageType messageType, string replyTo)
+        {
+            // copy the parameters locally so the OnWrite handler can access them
+            m_Session = session;
+            m_MessageType = messageType;
+            m_ReplyTo = replyTo;
+        }
+
         internal Collection<PSObject> RunPowerShellModule(string scriptName, string command)
         {
 
@@ -26,6 +39,12 @@ namespace AutoBot
 
             // initialise the host
             var host = new Host.AutoBotHost();
+            // add a handler for OnWrite events so we can bubble them up to the hipchat session
+            var hostUI = (host.UI as Host.AutoBotUserInterface);
+            if (hostUI != null)
+            {
+                hostUI.OnWrite += AutoBotUserInterface_OnWrite;
+            }
             // run the script inside the host
             using (var runspace = RunspaceFactory.CreateRunspace(host))
             {
@@ -77,6 +96,11 @@ namespace AutoBot
                 }
             }
 
+        }
+
+        internal void AutoBotUserInterface_OnWrite(object sender, string value)
+        {
+            m_Session.SendMessage(m_MessageType, m_ReplyTo, value);
         }
 
         internal string GetPath(string filenameWithoutExtension)
