@@ -20,10 +20,19 @@ _WARNING_: AutoBot is an infant and has some obvious (and other not so obvious) 
 		C:\AutoBot>build.bat
 
 ## Running Your AutoBot
++ Set PowerShell Execution policy (be sure to use the 32 Bit Powershell Command Prompt as an Administrator)
+		PS C:\>Set-ExecutionPolicy RemoteSigned
+
 + As a CommandLine App
 
-		C:\AutoBot>AutoBot.Cmd.exe
+		C:\AutoBot\build\>AutoBot.Cmd.exe
 
++ As a Windows Service
+
+		C:\AutoBot\src\>Install AutoBot service.bat
+		
+		Then simply Start\Stop the service in services.msc until your hearts content
+		
 ## Scripts
 AutoBot's scripts are written in [PowerShell](http://en.wikipedia.org/wiki/Windows_PowerShell).  
 AutoBot comes with a [couple of simple scripts](https://github.com/lholman/AutoBot/tree/master/src/AutoBot.Cmd/Scripts) to get you started.  If you'd like to contribute to his library of scripts please head over to the community scripts repository at [AutoBot-Scripts](https://github.com/lholman/AutoBot-Scripts) and get scripting.

@@ -4,7 +4,7 @@ using System.Management.Automation.Host;
 namespace AutoBot.Core.Host
 {
 
-    internal class AutoBotRawUserInterface : PSHostRawUserInterface
+    public class AutoBotRawUserInterface : PSHostRawUserInterface
     {
 
         #region Fields

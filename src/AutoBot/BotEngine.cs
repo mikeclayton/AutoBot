@@ -1,4 +1,5 @@
-﻿using System.Collections;
+using System;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Linq;
@@ -7,16 +8,21 @@ using AutoBot.HipChat;
 using jabber;
 using jabber.protocol.client;
 using log4net;
+using System.Threading;
 
 namespace AutoBot
 {
-    public static class BotEngine
+    public class BotEngine : MarshalByRefObject
     {
 
-        private static readonly HipChatSession Session = new HipChatSession(LogManager.GetLogger(typeof(HipChatSession)));
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(BotEngine));
-                
-        static BotEngine()
+        private readonly HipChatSession Session = new HipChatSession(LogManager.GetLogger(typeof(HipChatSession)));
+        private ManualResetEvent _mWaiter;
+        private Thread _thread;
+        private bool _serviceStarted = false;
+
+        private readonly ILog Logger = LogManager.GetLogger(typeof(BotEngine));
+
+        public BotEngine()
         {
             Session.Server = ConfigurationManager.AppSettings["HipChatServer"];
             Session.UserName = ConfigurationManager.AppSettings["HipChatUsername"];
@@ -26,15 +32,39 @@ namespace AutoBot
             Session.NickName = ConfigurationManager.AppSettings["HipChatBotNickName"];
             Session.SubscribedRooms = ConfigurationManager.AppSettings["HipChatRooms"];
             Session.OnMessageReceived += Session_OnMessageReceived;
-                       
+            _thread = new Thread(delegate()
+                                     {
+                                         while (_serviceStarted)
+                                         {
+                                             //TODO Add background task implementation here
+                                             Thread.Sleep(1000);
+                                         }
+                                         Thread.CurrentThread.Abort();
+                                     }
+                                );
         }
 
-        public static void SetupChatConnection()
+        public void Connect()
         {
             Session.Connect();
+            _serviceStarted = true;
+            _thread.Start();
+            // connect. this is synchronous so we'll use a manual reset event
+            // to pause this thread forever. client events will continue to
+            // fire but we won't have to worry about setting up an idle "while" loop.
+            _mWaiter = new ManualResetEvent(false);
+            _mWaiter.WaitOne();
+
         }
 
-        private static void Session_OnMessageReceived(object sender, Message message)
+        public void Disconnect()
+        {
+            Session.Disconnect();
+            _serviceStarted = false;
+            _thread.Join(5000);
+        }
+
+        private void Session_OnMessageReceived(object sender, Message message)
         {
             if (message.Body == null && message.X == null)
                 return;
@@ -64,7 +94,7 @@ namespace AutoBot
             SendResponse(responseJid, psObjects, message.Type);
         }
 
-        private static string RemoveMentionFromMessage(string chatText)
+        private string RemoveMentionFromMessage(string chatText)
         {
             //TODO: Remove all @'s
             return chatText.Replace(Session.MentionName, string.Empty).Trim();
@@ -84,7 +114,7 @@ namespace AutoBot
             return new PowerShellCommand(command, parameters);
         }
 
-        private static void SendResponse(JID replyTo, Collection<PSObject> psObjects, MessageType messageType)
+        private void SendResponse(JID replyTo, Collection<PSObject> psObjects, MessageType messageType)
         {
             foreach (var psObject in psObjects)
             {
@@ -102,12 +132,12 @@ namespace AutoBot
                     foreach (DictionaryEntry dictionaryEntry in hashTable)
                         message += string.Format("{0} = {1}\n", dictionaryEntry.Key, dictionaryEntry.Value);
                 }
-                
+
                 Session.SendMessage(messageType, replyTo, message);
             }
         }
 
-        private static void SendRandomResponse(JID replyTo, string chatText, MessageType messageType)
+        private void SendRandomResponse(JID replyTo, string chatText, MessageType messageType)
         {
             string[] chatTextWords = chatText.Split(' ');
             string message = string.Empty;
@@ -132,6 +162,6 @@ namespace AutoBot
             return;
         }
 
-
     }
+
 }

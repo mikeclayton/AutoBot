@@ -21,7 +21,6 @@ namespace AutoBot.HipChat
         private JabberClient _mJabberClient;
         private DiscoManager _mDiscoManager;
         private PresenceManager _mPresenceManager;
-        private ManualResetEvent _mWaiter;
 
         #endregion
 
@@ -236,7 +235,6 @@ namespace AutoBot.HipChat
             };
 
             _mDiscoManager = new DiscoManager();
-            _mWaiter = new ManualResetEvent(false);
             _mPresenceManager.OnPrimarySessionChange += presenceManager_OnPrimarySessionChange;
             _mJabberClient.OnConnect += jabber_OnConnect;
             _mJabberClient.OnAuthenticate += jabber_OnAuthenticate;
@@ -249,12 +247,28 @@ namespace AutoBot.HipChat
             _mJabberClient.OnRegistered += jabber_OnRegistered;
             _mJabberClient.OnRegisterInfo += jabber_OnRegisterInfo;
             _mJabberClient.OnMessage += jabber_OnMessage;
-            // connect. this is synchronous so we'll use a manual reset event
-            // to pause this thread forever. client events will continue to
-            // fire but we won't have to worry about setting up an idle "while" loop.
             _mJabberClient.Connect();
-            _mWaiter.WaitOne();
+            // connect to the HipChat server
+            Logger.Info(string.Format("Connecting to '{0}'", _mJabberClient.Server));
+            _mJabberClient.Connect();
+            int retryCountLimit = 10;
+            while (!_mJabberClient.IsAuthenticated && retryCountLimit > 0)
+            {
+                retryCountLimit--;
+                Thread.Sleep(1000);
+            }
+            if (_mJabberClient.IsAuthenticated)
+            {
+                Logger.Info(string.Format("Authenticated as '{0}'", _mJabberClient.User));
+            }
         }
+
+        public void Disconnect()
+        {
+            this.Logger.Info(string.Format("Disconnecting from '{0}'", _mJabberClient.Server));
+            _mJabberClient.Close();
+        }
+
 
         public void SendMessage(MessageType messageType, string replyTo, string message)
         {

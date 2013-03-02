@@ -1,5 +1,5 @@
 ﻿using System;
-using AutoBot.Cmd;
+using System.ServiceProcess;
 using log4net;
 
 namespace AutoBot
@@ -8,24 +8,26 @@ namespace AutoBot
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(Program));
         
-        private static int Main(string[] args)
+        private static void Main(string[] args)
         {
-            Logger.Debug("Debug statement");
-            Logger.Info("Info statement");
-            Logger.Error("Error statement");
-            Logger.Fatal("Fatal statatement");
+            if (args.Length > 0 && args[0].Equals("service", StringComparison.CurrentCultureIgnoreCase))
+            {
+                ServiceBase.Run(new ServiceBase[] { new Service() });
+            }
+            else
+            {
+                Logger.Info("Starting Autobot in console mode");
+                try
+                {
+                    BotEngine botEngine = new BotEngine();
+                    botEngine.Connect();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error("ERROR!:", ex);
+                }
+            }
 
-            Environment.ExitCode = (int)CommandLine.ExitCode.Success;
-            try
-            {
-                BotEngine.SetupChatConnection();
-            }
-            catch (Exception ex)
-            {
-                Environment.ExitCode = (int)CommandLine.ExitCode.UnknownError;
-                Logger.Error("ERROR!:", ex);
-            }
-            return Environment.ExitCode;
         }
 
      }
