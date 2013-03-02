@@ -1,18 +1,19 @@
-﻿using jabber;
-using jabber.protocol.client;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.ObjectModel;
 using System.Configuration;
-using System.Management.Automation;
-using log4net;
 using System.Linq;
+using System.Management.Automation;
+using AutoBot.HipChat;
+using jabber;
+using jabber.protocol.client;
+using log4net;
 
 namespace AutoBot
 {
     public static class BotEngine
     {
 
-        private static readonly HipChatSession Session = new HipChatSession();
+        private static readonly HipChatSession Session = new HipChatSession(LogManager.GetLogger(typeof(HipChatSession)));
         private static readonly ILog Logger = LogManager.GetLogger(typeof(BotEngine));
                 
         static BotEngine()

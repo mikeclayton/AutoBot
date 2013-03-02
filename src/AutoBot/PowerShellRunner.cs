@@ -1,10 +1,12 @@
-﻿using jabber.protocol.client;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
+using AutoBot.Core.Host;
+using AutoBot.HipChat;
+using jabber.protocol.client;
 using log4net;
 
 namespace AutoBot
@@ -38,9 +40,9 @@ namespace AutoBot
             }
 
             // initialise the host
-            var host = new Host.AutoBotHost(LogManager.GetLogger(typeof(AutoBot.Program)));
+            var host = new AutoBotHost(LogManager.GetLogger(typeof(AutoBot.Program)));
             // add a handler for OnWrite events so we can bubble them up to the hipchat session
-            var hostUI = (host.UI as Host.AutoBotUserInterface);
+            var hostUI = (host.UI as AutoBotUserInterface);
             if (hostUI != null)
             {
                 hostUI.OnWrite += AutoBotUserInterface_OnWrite;

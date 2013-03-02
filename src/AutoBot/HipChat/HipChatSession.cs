@@ -1,36 +1,97 @@
-﻿using jabber;
+﻿using System;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading;
+using jabber;
 using jabber.client;
 using jabber.connection;
 using jabber.protocol;
 using jabber.protocol.client;
 using jabber.protocol.iq;
 using log4net;
-using System;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading;
 
-namespace AutoBot
+namespace AutoBot.HipChat
 {
+
     internal class HipChatSession
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(HipChatSession));
-        
-        public delegate void MessageReceivedHandler(object sender, Message msg);
-        public event MessageReceivedHandler OnMessageReceived;
+
+        #region Fields
 
         private JabberClient _mJabberClient;
         private DiscoManager _mDiscoManager;
         private PresenceManager _mPresenceManager;
         private ManualResetEvent _mWaiter;
 
-        public string Server {get; set;}
-        public string UserName {get; set;}
-        public string Password {get; set;}
-        public string Resource {get; set;}
-        public string MentionName {get; set;}
-        public string NickName {get; set;}
-        public string SubscribedRooms {get; set;}
+        #endregion
+
+        #region Events
+
+        public delegate void MessageReceivedHandler(object sender, Message msg);
+        public event MessageReceivedHandler OnMessageReceived;
+
+        #endregion
+
+        #region Constructors
+
+        public HipChatSession(ILog logger)
+            : base()
+        {
+            this.Logger = logger;
+        }
+
+        #endregion
+
+        #region Properties
+        
+        private ILog Logger
+        {
+            get;
+            set;
+        }
+
+        public string Server
+        {
+            get;
+            set;
+        }
+
+        public string UserName
+        {
+            get;
+            set;
+        }
+
+        public string Password 
+        {
+            get;
+            set;
+        }
+        public string Resource
+        {
+            get;
+            set;
+        }
+
+        public string MentionName
+        {
+            get;
+            set;
+        }
+
+        public string NickName
+        {
+            get;
+            set;
+        }
+
+        public string SubscribedRooms
+        {
+            get;
+            set;
+        }
+
+        #endregion
 
         #region JabberClient Event Handlers
 
@@ -50,9 +111,9 @@ namespace AutoBot
             _mJabberClient.Login();
         }
 
-        private static void jabber_OnDisconnect(object sender)
+        private void jabber_OnDisconnect(object sender)
         {
-            Logger.Info("Disconnecting");
+            this.Logger.Info("Disconnecting");
 
         }
 

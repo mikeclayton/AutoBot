@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Management.Automation;
 using System.Management.Automation.Host;
-using System.Text;
 using System.Threading;
 using log4net;
 
-namespace AutoBot.Host
+namespace AutoBot.Core.Host
 {
 
     internal class AutoBotHost : PSHost
@@ -22,7 +18,8 @@ namespace AutoBot.Host
 
         #region Constructors
 
-        public AutoBotHost(ILog logger) : base()
+        public AutoBotHost(ILog logger)
+            : base()
         {
             this.Logger = logger;
         }
@@ -106,7 +103,7 @@ namespace AutoBot.Host
         {
             get
             {
-                if(m_UI == null)
+                if (m_UI == null)
                 {
                     m_UI = new AutoBotUserInterface(this.Logger);
                 }
@@ -123,6 +120,7 @@ namespace AutoBot.Host
         }
 
         #endregion
+
     }
 
 }

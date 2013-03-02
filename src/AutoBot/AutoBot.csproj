@@ -90,7 +90,7 @@
   <ItemGroup>
     <Compile Include="BotEngine.cs" />
     <Compile Include="CommandLine.cs" />
-    <Compile Include="HipChatSession.cs" />
+    <Compile Include="HipChat\HipChatSession.cs" />
     <Compile Include="Host\AutoBotHost.cs" />
     <Compile Include="Host\AutoBotRawUserInterface.cs" />
     <Compile Include="Host\AutoBotUserInterface.cs" />

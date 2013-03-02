@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Management.Automation;
 using System.Management.Automation.Host;
-using System.Text;
 
-namespace AutoBot.Host
+namespace AutoBot.Core.Host
 {
 
     internal class AutoBotRawUserInterface : PSHostRawUserInterface

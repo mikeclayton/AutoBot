@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Host;
-using System.Text;
 using log4net;
 
-namespace AutoBot.Host
+namespace AutoBot.Core.Host
 {
 
-    internal class AutoBotUserInterface: PSHostUserInterface
+    internal class AutoBotUserInterface : PSHostUserInterface
     {
 
         #region Fields
@@ -146,5 +144,5 @@ namespace AutoBot.Host
         #endregion
 
     }
-        
+
 }
