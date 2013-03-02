@@ -38,7 +38,7 @@ namespace AutoBot
             }
 
             // initialise the host
-            var host = new Host.AutoBotHost();
+            var host = new Host.AutoBotHost(LogManager.GetLogger(typeof(AutoBot.Program)));
             // add a handler for OnWrite events so we can bubble them up to the hipchat session
             var hostUI = (host.UI as Host.AutoBotUserInterface);
             if (hostUI != null)

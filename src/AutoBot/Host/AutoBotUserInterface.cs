@@ -14,8 +14,6 @@ namespace AutoBot.Host
 
         #region Fields
 
-        private readonly ILog _logger = LogManager.GetLogger(typeof(AutoBot.Program));
-
         private PSHostRawUserInterface m_RawUI;
 
         #endregion
@@ -24,6 +22,25 @@ namespace AutoBot.Host
 
         public delegate void WriteHandler(object sender, string value);
         public event WriteHandler OnWrite;
+
+        #endregion
+
+        #region Constructors
+
+        public AutoBotUserInterface(ILog logger)
+        {
+            this.Logger = logger;
+        }
+
+        #endregion
+
+        #region Properties
+
+        private ILog Logger
+        {
+            get;
+            set;
+        }
 
         #endregion
 
@@ -77,11 +94,11 @@ namespace AutoBot.Host
 
         #endregion
 
-        #region Script Output Methods
+        #region Output Methods
 
         public override void Write(ConsoleColor foregroundColor, ConsoleColor backgroundColor, string value)
         {
-            _logger.Info(value);
+            this.Logger.Info(value);
             this.OnWrite(this, value);
         }
 
@@ -102,26 +119,26 @@ namespace AutoBot.Host
 
         #endregion
 
-        #region Logging Output Methods
+        #region Logging Methods
 
         public override void WriteDebugLine(string message)
         {
-            _logger.Debug(message);
+            this.Logger.Debug(message);
         }
 
         public override void WriteErrorLine(string value)
         {
-            _logger.Error(value);
+            this.Logger.Error(value);
         }
 
         public override void WriteVerboseLine(string message)
         {
-            _logger.Info(message);
+            this.Logger.Info(message);
         }
 
         public override void WriteWarningLine(string message)
         {
-            _logger.Warn(message);
+            this.Logger.Warn(message);
         }
 
         #endregion

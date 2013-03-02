@@ -5,6 +5,7 @@ using System.Management.Automation;
 using System.Management.Automation.Host;
 using System.Text;
 using System.Threading;
+using log4net;
 
 namespace AutoBot.Host
 {
@@ -16,6 +17,25 @@ namespace AutoBot.Host
 
         private Guid m_InstanceId;
         private PSHostUserInterface m_UI;
+
+        #endregion
+
+        #region Constructors
+
+        public AutoBotHost(ILog logger) : base()
+        {
+            this.Logger = logger;
+        }
+
+        #endregion
+
+        #region Properties
+
+        private ILog Logger
+        {
+            get;
+            set;
+        }
 
         #endregion
 
@@ -88,7 +108,7 @@ namespace AutoBot.Host
             {
                 if(m_UI == null)
                 {
-                    m_UI = new AutoBotUserInterface();
+                    m_UI = new AutoBotUserInterface(this.Logger);
                 }
                 return m_UI;
             }
