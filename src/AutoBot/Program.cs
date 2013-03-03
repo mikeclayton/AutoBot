@@ -3,7 +3,9 @@ using System.ServiceProcess;
 using log4net;
 using AutoBot.Core.Engine;
 using AutoBot.Core.Chat;
-using AutoBot.ChatClients.HipChat;
+using Castle.Windsor;
+using Castle.Windsor.Installer;
+using Castle.MicroKernel.Registration;
 
 namespace AutoBot
 {
@@ -24,10 +26,12 @@ namespace AutoBot
                 Logger.Info("Starting Autobot in console mode");
                 try
                 {
-                    IChatSession session = new HipChatSession(LogManager.GetLogger(typeof(HipChatSession)));
-                    BotEngine botEngine = new BotEngine(session);
-                    session.MessageReceived += botEngine.ProcessMessage;
-                    botEngine.Connect();
+                    using (var container = new WindsorContainer())
+                    {
+                        container.Install(Configuration.FromAppConfig());
+                        BotEngine botEngine = container.Resolve<BotEngine>();
+                        botEngine.Connect();
+                    }
                 }
                 catch (Exception ex)
                 {

@@ -9,8 +9,8 @@ using jabber.connection;
 using jabber.protocol;
 using jabber.protocol.client;
 using jabber.protocol.iq;
-using log4net;
 using System.Configuration;
+using Castle.Core.Logging;
 
 namespace AutoBot.ChatClients.HipChat
 {
@@ -34,24 +34,17 @@ namespace AutoBot.ChatClients.HipChat
 
         #region Constructors
 
-        public HipChatSession(ILog logger)
+        public HipChatSession(ILogger logger)
             : base()
         {
             this.Logger = logger;
-            this.Server = ConfigurationManager.AppSettings["HipChatServer"];
-            this.UserName = ConfigurationManager.AppSettings["HipChatUsername"];
-            this.Password = ConfigurationManager.AppSettings["HipChatPassword"];
-            this.Resource = ConfigurationManager.AppSettings["HipChatResource"];
-            this.MentionName = ConfigurationManager.AppSettings["HipChatBotMentionName"];
-            this.NickName = ConfigurationManager.AppSettings["HipChatBotNickName"];
-            this.SubscribedRooms = ConfigurationManager.AppSettings["HipChatRooms"];
         }
 
         #endregion
 
         #region Properties
 
-        private ILog Logger
+        private ILogger Logger
         {
             get;
             set;

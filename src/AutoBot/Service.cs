@@ -3,7 +3,8 @@ using System.ServiceProcess;
 using log4net;
 using AutoBot.Core.Chat;
 using AutoBot.Core.Engine;
-using AutoBot.ChatClients.HipChat;
+using Castle.Windsor;
+using Castle.Windsor.Installer;
 
 namespace AutoBot
 {
@@ -21,12 +22,12 @@ namespace AutoBot
         protected override void OnStart(string[] args)
         {
             Logger.Info("Starting AutoBot Windows service");
-
-            IChatSession session = new HipChatSession(LogManager.GetLogger(typeof(HipChatSession)));
-            BotEngine botEngine = new BotEngine(session);
-            session.MessageReceived += botEngine.ProcessMessage;
-            _botEngine.Connect();
-            _botEngine.Connect();
+            using (var container = new WindsorContainer())
+            {
+                container.Install(Configuration.FromAppConfig());
+                _botEngine = container.Resolve<BotEngine>();
+                _botEngine.Connect();
+            }
         }
 
 

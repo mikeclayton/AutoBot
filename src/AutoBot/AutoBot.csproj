@@ -50,6 +50,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core">
+      <HintPath>..\..\lib\packages\Castle.Core.3.2.0\lib\net40-client\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Facilities.Logging">
+      <HintPath>..\..\lib\packages\Castle.LoggingFacility.3.2.0\lib\net40\Castle.Facilities.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Services.Logging.Log4netIntegration">
+      <HintPath>..\..\lib\packages\Castle.Core-log4net.3.2.0\lib\net40\Castle.Services.Logging.Log4netIntegration.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor">
+      <HintPath>..\..\lib\packages\Castle.Windsor.3.2.0\lib\net40\Castle.Windsor.dll</HintPath>
+    </Reference>
     <Reference Include="EasyHttp, Version=1.4.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\packages\EasyHttp.1.4.2.0\lib\net40\EasyHttp.dll</HintPath>
@@ -71,6 +83,7 @@
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
     <Reference Include="TeamCitySharp">
       <HintPath>..\..\lib\TeamCitySharp.dll</HintPath>
     </Reference>
@@ -127,13 +140,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AutoBot.Core\AutoBot.Core.csproj">
-      <Project>{4CA6F4E5-765D-4063-A6BE-4FD7DC9D0EF3}</Project>
-      <Name>AutoBot.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\AutoBot.ChatClients.HipChat\AutoBot.ChatClients.HipChat.csproj">
       <Project>{3C7C21F8-F86A-470D-8D68-87B1939C23D1}</Project>
       <Name>AutoBot.ChatClients.HipChat</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AutoBot.Core\AutoBot.Core.csproj">
+      <Project>{4CA6F4E5-765D-4063-A6BE-4FD7DC9D0EF3}</Project>
+      <Name>AutoBot.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Management.Automation;
 using System.Threading;
 using AutoBot.Core.Chat;
-using log4net;
+using Castle.Core.Logging;
 
 namespace AutoBot.Core.Engine
 {
@@ -19,11 +19,11 @@ namespace AutoBot.Core.Engine
         private Thread _thread;
         private bool _serviceStarted = false;
 
-        private readonly ILog Logger = LogManager.GetLogger(typeof(BotEngine));
-
-        public BotEngine(IChatSession session)
+        public BotEngine(ILogger logger, IChatSession session)
         {
+            this.Logger = logger;
             this.Session = session;
+            this.Session.MessageReceived += this.ProcessMessage;
             _thread = new Thread(delegate()
                                      {
                                          while (_serviceStarted)
@@ -34,6 +34,12 @@ namespace AutoBot.Core.Engine
                                          Thread.CurrentThread.Abort();
                                      }
                                 );
+        }
+
+        private ILogger Logger
+        {
+            get;
+            set;
         }
 
         public void Connect()

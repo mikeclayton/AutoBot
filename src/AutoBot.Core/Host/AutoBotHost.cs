@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Management.Automation.Host;
 using System.Threading;
-using log4net;
+using Castle.Core.Logging;
 
 namespace AutoBot.Core.Host
 {
@@ -18,7 +18,7 @@ namespace AutoBot.Core.Host
 
         #region Constructors
 
-        public AutoBotHost(ILog logger)
+        public AutoBotHost(ILogger logger)
             : base()
         {
             this.Logger = logger;
@@ -28,7 +28,7 @@ namespace AutoBot.Core.Host
 
         #region Properties
 
-        private ILog Logger
+        private ILogger Logger
         {
             get;
             set;

@@ -6,7 +6,7 @@ using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using AutoBot.Core.Chat;
 using AutoBot.Core.Host;
-using log4net;
+using Castle.Core.Logging;
 
 namespace AutoBot.Core.Engine
 {
@@ -15,14 +15,14 @@ namespace AutoBot.Core.Engine
     {
         private readonly string _scriptsPath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "Scripts");
 
-        internal PowerShellRunner(ILog logger, IChatResponse response)
+        internal PowerShellRunner(ILogger logger, IChatResponse response)
         {
             // copy the parameters locally so the OnWrite handler can access them
             this.Logger = logger;
             this.Response = response;
         }
 
-        private ILog Logger
+        private ILogger Logger
         {
             get;
             set;

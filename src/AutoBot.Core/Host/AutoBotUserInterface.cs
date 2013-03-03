@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Management.Automation;
 using System.Management.Automation.Host;
-using log4net;
+using Castle.Core.Logging;
 
 namespace AutoBot.Core.Host
 {
@@ -25,7 +25,7 @@ namespace AutoBot.Core.Host
 
         #region Constructors
 
-        public AutoBotUserInterface(ILog logger)
+        public AutoBotUserInterface(ILogger logger)
         {
             this.Logger = logger;
         }
@@ -34,7 +34,7 @@ namespace AutoBot.Core.Host
 
         #region Properties
 
-        private ILog Logger
+        private ILogger Logger
         {
             get;
             set;
