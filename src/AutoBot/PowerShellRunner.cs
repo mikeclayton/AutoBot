@@ -4,9 +4,8 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
+using AutoBot.Chat;
 using AutoBot.Core.Host;
-using AutoBot.HipChat;
-using jabber.protocol.client;
 using log4net;
 
 namespace AutoBot
@@ -16,16 +15,16 @@ namespace AutoBot
         private readonly string _scriptsPath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "Scripts");
         private readonly ILog _logger = LogManager.GetLogger(typeof(Program));
 
-        private HipChatSession m_Session;
-        private MessageType m_MessageType;
-        private string m_ReplyTo;
-
-        internal PowerShellRunner(HipChatSession session, MessageType messageType, string replyTo)
+        internal PowerShellRunner(IChatResponse response)
         {
             // copy the parameters locally so the OnWrite handler can access them
-            m_Session = session;
-            m_MessageType = messageType;
-            m_ReplyTo = replyTo;
+            this.Response = response;
+        }
+
+        private IChatResponse Response
+        {
+            get;
+            set;
         }
 
         internal Collection<PSObject> RunPowerShellModule(string scriptName, string command)
@@ -102,7 +101,7 @@ namespace AutoBot
 
         internal void AutoBotUserInterface_OnWrite(object sender, string value)
         {
-            m_Session.SendMessage(m_MessageType, m_ReplyTo, value);
+            this.Response.Write(value);
         }
 
         internal string GetPath(string filenameWithoutExtension)
@@ -130,4 +129,5 @@ namespace AutoBot
             ParameterText = parameter;
         }
     }
+
 }

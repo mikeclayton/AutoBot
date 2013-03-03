@@ -2,6 +2,7 @@
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
+using AutoBot.Chat;
 using jabber;
 using jabber.client;
 using jabber.connection;
@@ -13,7 +14,7 @@ using log4net;
 namespace AutoBot.HipChat
 {
 
-    internal class HipChatSession
+    internal sealed class HipChatSession : IChatSession
     {
 
         #region Fields
@@ -268,7 +269,6 @@ namespace AutoBot.HipChat
             this.Logger.Info(string.Format("Disconnecting from '{0}'", _mJabberClient.Server));
             _mJabberClient.Close();
         }
-
 
         public void SendMessage(MessageType messageType, string replyTo, string message)
         {

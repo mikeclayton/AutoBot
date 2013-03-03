@@ -4,11 +4,12 @@ using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Linq;
 using System.Management.Automation;
+using System.Threading;
+using AutoBot.Chat;
 using AutoBot.HipChat;
 using jabber;
 using jabber.protocol.client;
 using log4net;
-using System.Threading;
 
 namespace AutoBot
 {
@@ -74,13 +75,14 @@ namespace AutoBot
             if (string.IsNullOrEmpty(chatText) || chatText == " ")
                 return;
             
-            JID responseJid = new JID(message.From.User, message.From.Server, message.From.Resource);
+            var responseJid = new JID(message.From.User, message.From.Server, message.From.Resource);
+            var response = new HipChatResponse(this.Session, responseJid, message.Type);
             
             // intercept a handful of messages not directly for AutoBot
             if (message.Type == MessageType.groupchat && !chatText.Trim().StartsWith(Session.MentionName))
             {
                 chatText = RemoveMentionFromMessage(chatText);
-                SendRandomResponse(responseJid, chatText, message.Type);
+                SendRandomResponse(response, chatText);
                 return;
             }
 
@@ -88,10 +90,11 @@ namespace AutoBot
             chatText = RemoveMentionFromMessage(chatText);
             PowerShellCommand powerShellCommand = BuildPowerShellCommand(chatText);
 
-            var runner = new PowerShellRunner(Session, message.Type, responseJid);
+            var runner = new PowerShellRunner(response);
             Collection<PSObject> psObjects = runner.RunPowerShellModule(powerShellCommand.CommandText,
                                                                             powerShellCommand.ParameterText);
-            SendResponse(responseJid, psObjects, message.Type);
+            
+            SendResponse(response, psObjects);
         }
 
         private string RemoveMentionFromMessage(string chatText)
@@ -114,7 +117,7 @@ namespace AutoBot
             return new PowerShellCommand(command, parameters);
         }
 
-        private void SendResponse(JID replyTo, Collection<PSObject> psObjects, MessageType messageType)
+        private void SendResponse(IChatResponse response, Collection<PSObject> psObjects)
         {
             foreach (var psObject in psObjects)
             {
@@ -132,12 +135,11 @@ namespace AutoBot
                     foreach (DictionaryEntry dictionaryEntry in hashTable)
                         message += string.Format("{0} = {1}\n", dictionaryEntry.Key, dictionaryEntry.Value);
                 }
-
-                Session.SendMessage(messageType, replyTo, message);
+                response.Write(message);
             }
         }
 
-        private void SendRandomResponse(JID replyTo, string chatText, MessageType messageType)
+        private void SendRandomResponse(IChatResponse response, string chatText)
         {
             string[] chatTextWords = chatText.Split(' ');
             string message = string.Empty;
@@ -154,10 +156,10 @@ namespace AutoBot
             if (message != string.Empty)
             {
                 PowerShellCommand powerShellCommand = BuildPowerShellCommand(message);
-                var runner = new PowerShellRunner(Session, messageType, replyTo);
+                var runner = new PowerShellRunner(response);
                 Collection<PSObject> psObjects = runner.RunPowerShellModule(powerShellCommand.CommandText,
                                                                                 powerShellCommand.ParameterText);
-                SendResponse(replyTo, psObjects, messageType);
+                SendResponse(response, psObjects);
             }
             return;
         }

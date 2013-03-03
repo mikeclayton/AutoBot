@@ -90,7 +90,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Chat\IChatMessage.cs" />
+    <Compile Include="Chat\IChatResponse.cs" />
+    <Compile Include="Chat\IChatSession.cs" />
     <Compile Include="CommandLine.cs" />
+    <Compile Include="HipChat\HipChatResponse.cs" />
     <Compile Include="Service.cs">
       <SubType>Component</SubType>
     </Compile>
