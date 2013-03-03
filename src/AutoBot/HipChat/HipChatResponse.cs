@@ -49,7 +49,7 @@ namespace AutoBot.HipChat
 
         public void Write(string text)
         {
-            this.Session.SendMessage(this.MessageType, this.ReplyTo, text);
+            this.Session.SendResponse(this.MessageType, this.ReplyTo, text);
         }
 
         #endregion

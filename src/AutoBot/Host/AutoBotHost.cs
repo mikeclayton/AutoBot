@@ -6,7 +6,7 @@ using log4net;
 namespace AutoBot.Core.Host
 {
 
-    public class AutoBotHost : PSHost
+    public sealed class AutoBotHost : PSHost
     {
 
         #region Fields

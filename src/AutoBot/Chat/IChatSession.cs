@@ -9,6 +9,10 @@ namespace AutoBot.Chat
     public interface IChatSession
     {
 
+        event EventHandler<MessageReceivedEventArgs> MessageReceived;
+
+        void Connect();
+        void Disconnect();
 
     }
 

@@ -10,12 +10,19 @@ using jabber.protocol;
 using jabber.protocol.client;
 using jabber.protocol.iq;
 using log4net;
+using System.Configuration;
 
 namespace AutoBot.HipChat
 {
 
-    internal sealed class HipChatSession : IChatSession
+    public sealed class HipChatSession : IChatSession
     {
+
+        #region Events
+
+        public event EventHandler<MessageReceivedEventArgs> MessageReceived;
+
+        #endregion
 
         #region Fields
 
@@ -25,25 +32,25 @@ namespace AutoBot.HipChat
 
         #endregion
 
-        #region Events
-
-        public delegate void MessageReceivedHandler(object sender, Message msg);
-        public event MessageReceivedHandler OnMessageReceived;
-
-        #endregion
-
         #region Constructors
 
         public HipChatSession(ILog logger)
             : base()
         {
             this.Logger = logger;
+            this.Server = ConfigurationManager.AppSettings["HipChatServer"];
+            this.UserName = ConfigurationManager.AppSettings["HipChatUsername"];
+            this.Password = ConfigurationManager.AppSettings["HipChatPassword"];
+            this.Resource = ConfigurationManager.AppSettings["HipChatResource"];
+            this.MentionName = ConfigurationManager.AppSettings["HipChatBotMentionName"];
+            this.NickName = ConfigurationManager.AppSettings["HipChatBotNickName"];
+            this.SubscribedRooms = ConfigurationManager.AppSettings["HipChatRooms"];
         }
 
         #endregion
 
         #region Properties
-        
+
         private ILog Logger
         {
             get;
@@ -62,7 +69,7 @@ namespace AutoBot.HipChat
             set;
         }
 
-        public string Password 
+        public string Password
         {
             get;
             set;
@@ -98,7 +105,7 @@ namespace AutoBot.HipChat
         private void jabber_OnMessage(object sender, Message msg)
         {
             Logger.Debug(string.Format("RECV From: {0}@{1} : {2}", msg.From.User, msg.From.Server, msg.Body));
-            this.OnMessageReceived(this, msg);
+            this.OnMessageReceived(msg);
         }
 
         private bool jabber_OnRegisterInfo(object sender, Register register)
@@ -113,7 +120,7 @@ namespace AutoBot.HipChat
 
         private void jabber_OnDisconnect(object sender)
         {
-            this.Logger.Info("Disconnecting");
+            this.Logger.Info("jabber_OnDisconnect - Disconnecting");
 
         }
 
@@ -125,7 +132,7 @@ namespace AutoBot.HipChat
 
         private void jabber_OnConnect(object o, StanzaStream s)
         {
-            Logger.Info("Connecting");
+            Logger.Info("jabber_OnConnect - Connecting");
             var client = (JabberClient)o;
         }
 
@@ -187,7 +194,7 @@ namespace AutoBot.HipChat
         {
             if (node == null)
                 return;
-            
+
             if (node.Children != null && SubscribedRooms == "@all")
             {
                 foreach (DiscoNode dn in node.Children)
@@ -212,7 +219,7 @@ namespace AutoBot.HipChat
 
         #endregion
 
-        #region Methods
+        #region IChatSession Interface
 
         public void Connect()
         {
@@ -229,12 +236,10 @@ namespace AutoBot.HipChat
                 AutoReconnect = -1,
                 AutoLogin = true
             };
-
             _mPresenceManager = new PresenceManager
             {
                 Stream = _mJabberClient
             };
-
             _mDiscoManager = new DiscoManager();
             _mPresenceManager.OnPrimarySessionChange += presenceManager_OnPrimarySessionChange;
             _mJabberClient.OnConnect += jabber_OnConnect;
@@ -248,13 +253,13 @@ namespace AutoBot.HipChat
             _mJabberClient.OnRegistered += jabber_OnRegistered;
             _mJabberClient.OnRegisterInfo += jabber_OnRegisterInfo;
             _mJabberClient.OnMessage += jabber_OnMessage;
-            _mJabberClient.Connect();
             // connect to the HipChat server
             Logger.Info(string.Format("Connecting to '{0}'", _mJabberClient.Server));
             _mJabberClient.Connect();
             int retryCountLimit = 10;
             while (!_mJabberClient.IsAuthenticated && retryCountLimit > 0)
             {
+                Logger.Info(string.Format("Waiting..."));
                 retryCountLimit--;
                 Thread.Sleep(1000);
             }
@@ -270,9 +275,47 @@ namespace AutoBot.HipChat
             _mJabberClient.Close();
         }
 
-        public void SendMessage(MessageType messageType, string replyTo, string message)
+        #endregion
+
+        #region Methods
+
+        public void OnMessageReceived(Message message)
+        {
+            // take a local copy of the event so we don't get a race condition on the next line
+            var handler = this.MessageReceived;
+            if (handler != null)
+            {
+                // extract the chat text
+                if (message.Body == null && message.X == null)
+                {
+                    return;
+                }
+                var commandText = message.Body == null ? message.X.InnerText.Trim() : message.Body.Trim();
+                // intercept a handful of messages not directly for AutoBot
+                if (message.Type == MessageType.groupchat && commandText.Trim().StartsWith(this.MentionName))
+                {
+                    commandText = this.RemoveMentionFromMessage(commandText);
+                    // process random message
+                }
+                // build the chat message and response to pass to the event handler
+                var chatMessage = new HipChatMessage(message.Type, message.Body, commandText);
+                var responseJid = new JID(message.From.User, message.From.Server, message.From.Resource);
+                var chatResponse = new HipChatResponse(this, responseJid, message.Type);
+                var args = new MessageReceivedEventArgs(chatMessage, chatResponse);
+                // call the event handler
+                handler(this, args);
+            }
+        }
+
+        public void SendResponse(MessageType messageType, string replyTo, string message)
         {
             _mJabberClient.Message(messageType, replyTo, message);
+        }
+
+        private string RemoveMentionFromMessage(string chatText)
+        {
+            //TODO: Remove all @'s
+            return chatText.Replace(this.MentionName, string.Empty).Trim();
         }
 
         #endregion

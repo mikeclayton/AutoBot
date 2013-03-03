@@ -8,9 +8,10 @@ using AutoBot.Chat;
 using AutoBot.Core.Host;
 using log4net;
 
-namespace AutoBot
+namespace AutoBot.Engine
 {
-    public class PowerShellRunner
+
+    public sealed class PowerShellRunner
     {
         private readonly string _scriptsPath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "Scripts");
         private readonly ILog _logger = LogManager.GetLogger(typeof(Program));

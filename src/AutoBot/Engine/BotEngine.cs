@@ -6,33 +6,26 @@ using System.Linq;
 using System.Management.Automation;
 using System.Threading;
 using AutoBot.Chat;
-using AutoBot.HipChat;
 using jabber;
 using jabber.protocol.client;
 using log4net;
 
-namespace AutoBot
+namespace AutoBot.Engine
 {
-    public class BotEngine : MarshalByRefObject
+
+    public sealed class BotEngine : MarshalByRefObject
     {
 
-        private readonly HipChatSession Session = new HipChatSession(LogManager.GetLogger(typeof(HipChatSession)));
+        private readonly IChatSession Session;
         private ManualResetEvent _mWaiter;
         private Thread _thread;
         private bool _serviceStarted = false;
 
         private readonly ILog Logger = LogManager.GetLogger(typeof(BotEngine));
 
-        public BotEngine()
+        public BotEngine(IChatSession session)
         {
-            Session.Server = ConfigurationManager.AppSettings["HipChatServer"];
-            Session.UserName = ConfigurationManager.AppSettings["HipChatUsername"];
-            Session.Password = ConfigurationManager.AppSettings["HipChatPassword"];
-            Session.Resource = ConfigurationManager.AppSettings["HipChatResource"];
-            Session.MentionName = ConfigurationManager.AppSettings["HipChatBotMentionName"];
-            Session.NickName = ConfigurationManager.AppSettings["HipChatBotNickName"];
-            Session.SubscribedRooms = ConfigurationManager.AppSettings["HipChatRooms"];
-            Session.OnMessageReceived += Session_OnMessageReceived;
+            this.Session = session;
             _thread = new Thread(delegate()
                                      {
                                          while (_serviceStarted)
@@ -65,42 +58,32 @@ namespace AutoBot
             _thread.Join(5000);
         }
 
-        private void Session_OnMessageReceived(object sender, Message message)
+
+        public void ProcessMessage(object sender, MessageReceivedEventArgs e)
         {
-            if (message.Body == null && message.X == null)
-                return;
-
-            string chatText = message.Body == null ? message.X.InnerText.Trim() : message.Body.Trim();
-
-            if (string.IsNullOrEmpty(chatText) || chatText == " ")
-                return;
-            
-            var responseJid = new JID(message.From.User, message.From.Server, message.From.Resource);
-            var response = new HipChatResponse(this.Session, responseJid, message.Type);
-            
-            // intercept a handful of messages not directly for AutoBot
-            if (message.Type == MessageType.groupchat && !chatText.Trim().StartsWith(Session.MentionName))
+            // check if the message is worth processing
+            var chatText = e.Message.CommandText;
+            if (string.IsNullOrEmpty(chatText) || string.IsNullOrEmpty(chatText.Trim()))
             {
-                chatText = RemoveMentionFromMessage(chatText);
-                SendRandomResponse(response, chatText);
                 return;
             }
-
-            // ensure the message is intended for AutoBot
-            chatText = RemoveMentionFromMessage(chatText);
+            // intercept some special "commands"
+            string[] words = chatText.Split(' ');
+            switch (words[0])
+            {
+                case "coolio":
+                case "superb":
+                    chatText = "Get-RandomImage " + chatText;
+                    break;
+                default:
+                    break;
+            }
+            // execute the command
             PowerShellCommand powerShellCommand = BuildPowerShellCommand(chatText);
-
-            var runner = new PowerShellRunner(response);
+            var runner = new PowerShellRunner(e.Response);
             Collection<PSObject> psObjects = runner.RunPowerShellModule(powerShellCommand.CommandText,
-                                                                            powerShellCommand.ParameterText);
-            
-            SendResponse(response, psObjects);
-        }
-
-        private string RemoveMentionFromMessage(string chatText)
-        {
-            //TODO: Remove all @'s
-            return chatText.Replace(Session.MentionName, string.Empty).Trim();
+                                                                            powerShellCommand.ParameterText);            
+            SendResponse(e.Response, psObjects);
         }
 
         private static PowerShellCommand BuildPowerShellCommand(string chatText)
@@ -137,31 +120,6 @@ namespace AutoBot
                 }
                 response.Write(message);
             }
-        }
-
-        private void SendRandomResponse(IChatResponse response, string chatText)
-        {
-            string[] chatTextWords = chatText.Split(' ');
-            string message = string.Empty;
-            switch (chatTextWords[0])
-            {
-                case "coolio":
-                case "superb":
-                    message = "Get-RandomImage " + chatText;
-                    break;
-                default:
-                    break;
-            }
-
-            if (message != string.Empty)
-            {
-                PowerShellCommand powerShellCommand = BuildPowerShellCommand(message);
-                var runner = new PowerShellRunner(response);
-                Collection<PSObject> psObjects = runner.RunPowerShellModule(powerShellCommand.CommandText,
-                                                                                powerShellCommand.ParameterText);
-                SendResponse(response, psObjects);
-            }
-            return;
         }
 
     }

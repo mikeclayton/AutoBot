@@ -1,11 +1,16 @@
 ﻿using System;
 using System.ServiceProcess;
 using log4net;
+using AutoBot.Engine;
+using AutoBot.Chat;
+using AutoBot.HipChat;
 
 namespace AutoBot
 {
+
     class Program
     {
+
         private static readonly ILog Logger = LogManager.GetLogger(typeof(Program));
         
         private static void Main(string[] args)
@@ -19,7 +24,9 @@ namespace AutoBot
                 Logger.Info("Starting Autobot in console mode");
                 try
                 {
-                    BotEngine botEngine = new BotEngine();
+                    IChatSession session = new HipChatSession(LogManager.GetLogger(typeof(HipChatSession)));
+                    BotEngine botEngine = new BotEngine(session);
+                    session.MessageReceived += botEngine.ProcessMessage;
                     botEngine.Connect();
                 }
                 catch (Exception ex)
@@ -31,4 +38,5 @@ namespace AutoBot
         }
 
      }
+
 }
