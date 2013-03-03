@@ -284,11 +284,9 @@ namespace AutoBot.ChatClients.HipChat
                     return;
                 }
                 var commandText = message.Body == null ? message.X.InnerText.Trim() : message.Body.Trim();
-                // intercept a handful of messages not directly for AutoBot
                 if (message.Type == MessageType.groupchat && commandText.Trim().StartsWith(this.MentionName))
                 {
                     commandText = this.RemoveMentionFromMessage(commandText);
-                    // process random message
                 }
                 // build the chat message and response to pass to the event handler
                 var chatMessage = new HipChatMessage(message.Type, message.Body, commandText);

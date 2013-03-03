@@ -144,6 +144,10 @@
       <Project>{3C7C21F8-F86A-470D-8D68-87B1939C23D1}</Project>
       <Name>AutoBot.ChatClients.HipChat</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AutoBot.ChatClients.Skype\AutoBot.ChatClients.Skype.csproj">
+      <Project>{BF08BFAC-2089-4779-8557-1D76E0DC24E5}</Project>
+      <Name>AutoBot.ChatClients.Skype</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AutoBot.Core\AutoBot.Core.csproj">
       <Project>{4CA6F4E5-765D-4063-A6BE-4FD7DC9D0EF3}</Project>
       <Name>AutoBot.Core</Name>

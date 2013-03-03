@@ -13,6 +13,7 @@
                 configFile="App.config" />
     </facilities>
     <components>
+      <!-- hipchat -->
       <component service="AutoBot.Core.Chat.IChatSession"
                  type="AutoBot.ChatClients.HipChat.HipChatSession, AutoBot.ChatClients.HipChat">
         <parameters>
@@ -26,6 +27,12 @@
           <SubscribedRooms>@all</SubscribedRooms>
         </parameters>
       </component>
+      <!-- skype -->
+      <!--
+      <component service="AutoBot.Core.Chat.IChatSession"
+                 type="AutoBot.ChatClients.Skype.SkypeSession, AutoBot.ChatClients.Skype">
+      </component>      
+      -->
       <component service="AutoBot.Core.Engine.BotEngine"
                  type="AutoBot.Core, AutoBot.Core.Engine.BotEngine">
       </component>
