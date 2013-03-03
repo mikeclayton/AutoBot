@@ -54,12 +54,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\packages\EasyHttp.1.4.2.0\lib\net40\EasyHttp.dll</HintPath>
     </Reference>
-    <Reference Include="HipChat.Net">
-      <HintPath>..\..\lib\packages\HipChat.Net.1.0\lib\net40\HipChat.Net.dll</HintPath>
-    </Reference>
-    <Reference Include="jabber-net">
-      <HintPath>..\..\lib\jabber-net.dll</HintPath>
-    </Reference>
     <Reference Include="JsonFx, Version=2.0.1106.2610, Culture=neutral, PublicKeyToken=315052dd637f8a52, processorArchitecture=MSIL">
       <HintPath>..\..\lib\packages\JsonFx.2.0.1106.2610\lib\net40\JsonFx.dll</HintPath>
     </Reference>
@@ -75,12 +69,8 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Management" />
     <Reference Include="System.ServiceProcess" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Management.Automation" />
     <Reference Include="TeamCitySharp">
       <HintPath>..\..\lib\TeamCitySharp.dll</HintPath>
     </Reference>
@@ -90,25 +80,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Chat\IChatMessage.cs" />
-    <Compile Include="Chat\IChatResponse.cs" />
-    <Compile Include="Chat\IChatSession.cs" />
-    <Compile Include="Chat\MessageReceivedEventArgs.cs" />
-    <Compile Include="Engine\ExitCode.cs" />
-    <Compile Include="HipChat\HipChatMessage.cs" />
-    <Compile Include="HipChat\HipChatResponse.cs" />
     <Compile Include="Service.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Service.Designer.cs">
       <DependentUpon>Service.cs</DependentUpon>
     </Compile>
-    <Compile Include="Engine\BotEngine.cs" />
-    <Compile Include="HipChat\HipChatSession.cs" />
-    <Compile Include="Host\AutoBotHost.cs" />
-    <Compile Include="Host\AutoBotRawUserInterface.cs" />
-    <Compile Include="Host\AutoBotUserInterface.cs" />
-    <Compile Include="Engine\PowerShellRunner.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -148,6 +125,16 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AutoBot.Core\AutoBot.Core.csproj">
+      <Project>{4CA6F4E5-765D-4063-A6BE-4FD7DC9D0EF3}</Project>
+      <Name>AutoBot.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AutoBot.ChatClients.HipChat\AutoBot.ChatClients.HipChat.csproj">
+      <Project>{3C7C21F8-F86A-470D-8D68-87B1939C23D1}</Project>
+      <Name>AutoBot.ChatClients.HipChat</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

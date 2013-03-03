@@ -2,7 +2,7 @@
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
-using AutoBot.Chat;
+using AutoBot.Core.Chat;
 using jabber;
 using jabber.client;
 using jabber.connection;
@@ -12,7 +12,7 @@ using jabber.protocol.iq;
 using log4net;
 using System.Configuration;
 
-namespace AutoBot.HipChat
+namespace AutoBot.ChatClients.HipChat
 {
 
     public sealed class HipChatSession : IChatSession

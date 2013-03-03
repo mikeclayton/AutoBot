@@ -5,12 +5,10 @@ using System.Configuration;
 using System.Linq;
 using System.Management.Automation;
 using System.Threading;
-using AutoBot.Chat;
-using jabber;
-using jabber.protocol.client;
+using AutoBot.Core.Chat;
 using log4net;
 
-namespace AutoBot.Engine
+namespace AutoBot.Core.Engine
 {
 
     public sealed class BotEngine : MarshalByRefObject
@@ -80,7 +78,7 @@ namespace AutoBot.Engine
             }
             // execute the command
             PowerShellCommand powerShellCommand = BuildPowerShellCommand(chatText);
-            var runner = new PowerShellRunner(e.Response);
+            var runner = new PowerShellRunner(this.Logger, e.Response);
             Collection<PSObject> psObjects = runner.RunPowerShellModule(powerShellCommand.CommandText,
                                                                             powerShellCommand.ParameterText);            
             SendResponse(e.Response, psObjects);

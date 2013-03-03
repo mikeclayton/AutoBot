@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace AutoBot.Cmd
+namespace AutoBot.Core.Engine
 {
 
     public enum ExitCode : int

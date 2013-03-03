@@ -4,22 +4,28 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
-using AutoBot.Chat;
+using AutoBot.Core.Chat;
 using AutoBot.Core.Host;
 using log4net;
 
-namespace AutoBot.Engine
+namespace AutoBot.Core.Engine
 {
 
     public sealed class PowerShellRunner
     {
         private readonly string _scriptsPath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "Scripts");
-        private readonly ILog _logger = LogManager.GetLogger(typeof(Program));
 
-        internal PowerShellRunner(IChatResponse response)
+        internal PowerShellRunner(ILog logger, IChatResponse response)
         {
             // copy the parameters locally so the OnWrite handler can access them
+            this.Logger = logger;
             this.Response = response;
+        }
+
+        private ILog Logger
+        {
+            get;
+            set;
         }
 
         private IChatResponse Response
@@ -40,7 +46,7 @@ namespace AutoBot.Engine
             }
 
             // initialise the host
-            var host = new AutoBotHost(LogManager.GetLogger(typeof(AutoBot.Program)));
+            var host = new AutoBotHost(this.Logger);
             // add a handler for OnWrite events so we can bubble them up to the hipchat session
             var hostUI = (host.UI as AutoBotUserInterface);
             if (hostUI != null)
@@ -69,7 +75,7 @@ namespace AutoBot.Engine
                             foreach (var error in errors)
                                 errorString += error.ToString();
 
-                            _logger.Error(string.Format("ERROR!: {0}", errorString));
+                            this.Logger.Error(string.Format("ERROR!: {0}", errorString));
                             return new Collection<PSObject>
                                             {
                                                 new PSObject(string.Format("OOohhh, I got an error running {0}.  It looks like this: \r\n{1}.", scriptName, errorString))
@@ -80,7 +86,7 @@ namespace AutoBot.Engine
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error("ERROR!:", ex);
+                        this.Logger.Error("ERROR!:", ex);
                         string errorText = string.Format("Urghhh!, that didn't taste nice!  There's a problem with me running the {0} script. \r\n", scriptName);
                         errorText += String.Format("Check you are calling the script correctly by using \"@autobot get-help {0}\" \r\n", scriptName);
                         errorText += "If all else fails ask your administrator for the event/error log entry.";

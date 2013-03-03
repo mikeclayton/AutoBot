@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AutoBot.Chat;
+using AutoBot.Core.Chat;
 using jabber.protocol.client;
 
-namespace AutoBot.HipChat
+namespace AutoBot.ChatClients.HipChat
 {
 
     public sealed class HipChatMessage : IChatMessage

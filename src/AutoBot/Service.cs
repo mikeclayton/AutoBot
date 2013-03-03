@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ServiceProcess;
 using log4net;
-using AutoBot.Chat;
-using AutoBot.Engine;
-using AutoBot.HipChat;
+using AutoBot.Core.Chat;
+using AutoBot.Core.Engine;
+using AutoBot.ChatClients.HipChat;
 
 namespace AutoBot
 {
