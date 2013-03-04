@@ -34,7 +34,7 @@
       </component>      
       -->
       <component service="AutoBot.Core.Engine.BotEngine"
-                 type="AutoBot.Core, AutoBot.Core.Engine.BotEngine">
+                 type="AutoBot.Core.Engine.BotEngine, AutoBot.Core">
       </component>
     </components>
   </castle>
@@ -53,6 +53,10 @@
       <mapping>
         <level value="INFO" />
         <foreColor value="Green, HighIntensity" />
+      </mapping>
+      <mapping>
+        <level value="WARN" />
+        <foreColor value="Yellow, HighIntensity" />
       </mapping>
       <mapping>
         <level value="ERROR" />
