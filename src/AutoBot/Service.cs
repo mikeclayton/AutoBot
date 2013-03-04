@@ -10,14 +10,14 @@ namespace AutoBot
 {
     partial class Service : ServiceBase
     {
+
         private static readonly ILog Logger = LogManager.GetLogger(typeof(Service));
+        private BotEngine _botEngine;
 
         public Service()
         {
             InitializeComponent();
         }
-
-        private BotEngine _botEngine;
 
         protected override void OnStart(string[] args)
         {
@@ -26,7 +26,7 @@ namespace AutoBot
             {
                 container.Install(Configuration.FromAppConfig());
                 _botEngine = container.Resolve<BotEngine>();
-                _botEngine.Connect();
+                _botEngine.Start();
             }
         }
 
@@ -34,8 +34,7 @@ namespace AutoBot
         protected override void OnStop()
         {
             Logger.Info("Stopping AutoBot Windows service");
-
-            _botEngine.Disconnect();
+            _botEngine.Stop();
         }
     }
 }

@@ -6,6 +6,7 @@ using AutoBot.Core.Chat;
 using Castle.Windsor;
 using Castle.Windsor.Installer;
 using Castle.MicroKernel.Registration;
+using System.Threading;
 
 namespace AutoBot
 {
@@ -30,7 +31,12 @@ namespace AutoBot
                     {
                         container.Install(Configuration.FromAppConfig());
                         BotEngine botEngine = container.Resolve<BotEngine>();
-                        botEngine.Connect();
+                        botEngine.Start();
+                        // "start" is synchronous so we'll use a manual reset event
+                        // to pause this thread forever. client events will continue to
+                        // fire but we won't have to worry about setting up an idle "while" loop.
+                        var waiter = new ManualResetEvent(false);
+                        waiter.WaitOne();
                     }
                 }
                 catch (Exception ex)
