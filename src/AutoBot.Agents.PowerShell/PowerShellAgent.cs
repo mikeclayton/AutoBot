@@ -5,23 +5,21 @@ using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Reflection;
 using AutoBot.Core.Chat;
-using AutoBot.Core.Host;
+using AutoBot.Core.Engine;
 using Castle.Core.Logging;
 
-namespace AutoBot.Core.Engine
+namespace AutoBot.Agents.PowerShell
 {
 
-    public sealed class PowerShellRunner
+    public sealed class PowerShellAgent : IAgent
     {
 
         #region Constructors
 
-        internal PowerShellRunner(ILogger logger, IChatMessage message, IChatResponse response)
+        public PowerShellAgent(ILogger logger)
         {
             // copy the parameters locally so the OnWrite handler can access them
             this.Logger = logger;
-            this.Message = message;
-            this.Response = response;
             this.ScriptPath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Scripts");
         }
 
@@ -35,18 +33,6 @@ namespace AutoBot.Core.Engine
             set;
         }
 
-        private IChatMessage Message
-        {
-            get;
-            set;
-        }
-
-        private IChatResponse Response
-        {
-            get;
-            set;
-        }
-
         private string ScriptPath
         {
             get;
@@ -55,38 +41,31 @@ namespace AutoBot.Core.Engine
 
         #endregion
 
-        #region Event Handlers
+        #region IAgent Interface
 
-        internal void AutoBotUserInterface_OnWrite(object sender, string value)
-        {
-            this.Response.Write(value);
-        }
-
-        #endregion
-
-        #region Methods
-
-        public void Execute()
+        public void Execute(IChatMessage message, IChatResponse response)
         {
             // parse the command so we know what to run
-            var command = this.ParseCommand(this.Message.CommandText);
+            var command = this.ParseCommand(message.CommandText);
             if (command == null)
             {
-                this.Response.Write("Erk! Not sure what to say to that.");
+                response.Write("Erk! Not sure what to say to that.");
+                return;
             }
             // check the script module exists
             var modulePath = this.GetFullModulePath(command.Command);
             if (!File.Exists(modulePath))
             {
-                this.Response.Write("Unknown command! Try \"@autobot Get-Help\" instead.");
+                response.Write("Unknown command! Try \"@autobot Get-Help\" instead.");
+                return;
             }
             // initialise the host
-            var host = new AutoBotHost(this.Logger);
-            // add a handler for OnWrite events so we can bubble them up to the hipchat session
-            var hostUI = (host.UI as AutoBotUserInterface);
+            var host = new Host(this.Logger);
+            // add a handler for OnWrite events so we can bubble them up to the chat session
+            var hostUI = (host.UI as UserInterface);
             if (hostUI != null)
             {
-                hostUI.OnWrite += AutoBotUserInterface_OnWrite;
+                hostUI.OnWrite += delegate(object sender, string value) { response.Write(value); };
             }
             // create a new initial state with the script module loaded
             var state = InitialSessionState.CreateDefault();
@@ -111,22 +90,22 @@ namespace AutoBot.Core.Engine
                                 errorString.AppendLine(error.ToString());
                             }
                             this.Logger.Error(string.Format("ERROR!: {0}", errorString.ToString()));
-                            this.Response.Write(string.Format("OOohhh, I got an error running {0}. It looks like this:", command));
-                            this.Response.Write(errorString.ToString());
+                            response.Write(string.Format("OOohhh, I got an error running {0}. It looks like this:", command));
+                            response.Write(errorString.ToString());
                             return;
                         }
                         // write the result
                         foreach (var psObject in psObjects)
                         {
-                            this.Response.Write(this.SerializePSObject(psObject));
+                            response.Write(this.SerializePSObject(psObject));
                         }
                     }
                     catch (Exception ex)
                     {
                         this.Logger.Error("ERROR!: ", ex);
-                        this.Response.Write(string.Format("Urghhh!, that didn't taste nice!  There's a problem with me running the {0} script.", command));
-                        this.Response.Write(string.Format("Check you are calling the script correctly by using \"@autobot get-help {0}\"", command));
-                        this.Response.Write("If all else fails ask your administrator for the event/error log entry.");
+                        response.Write(string.Format("Urghhh!, that didn't taste nice!  There's a problem with me running the {0} script.", command));
+                        response.Write(string.Format("Check you are calling the script correctly by using \"@autobot get-help {0}\"", command));
+                        response.Write("If all else fails ask your administrator for the event/error log entry.");
                     }
                 }
             }

@@ -4,10 +4,10 @@ using System.Management.Automation;
 using System.Management.Automation.Host;
 using Castle.Core.Logging;
 
-namespace AutoBot.Core.Host
+namespace AutoBot.Agents.PowerShell
 {
 
-    public sealed class AutoBotUserInterface : PSHostUserInterface
+    internal sealed class UserInterface : PSHostUserInterface
     {
 
         #region Fields
@@ -25,7 +25,7 @@ namespace AutoBot.Core.Host
 
         #region Constructors
 
-        public AutoBotUserInterface(ILogger logger)
+        public UserInterface(ILogger logger)
         {
             this.Logger = logger;
         }
@@ -74,7 +74,7 @@ namespace AutoBot.Core.Host
             {
                 if (m_RawUI == null)
                 {
-                    m_RawUI = new AutoBotRawUserInterface();
+                    m_RawUI = new RawUserInterface();
                 }
                 return m_RawUI;
             }

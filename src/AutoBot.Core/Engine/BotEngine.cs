@@ -2,6 +2,8 @@ using System;
 using System.Threading;
 using AutoBot.Core.Chat;
 using Castle.Core.Logging;
+using Castle.Windsor;
+using Castle.Windsor.Installer;
 
 namespace AutoBot.Core.Engine
 {
@@ -82,8 +84,12 @@ namespace AutoBot.Core.Engine
         public void Session_OnMessageReceived(object sender, MessageReceivedEventArgs e)
         {
             // execute the command
-            var runner = new PowerShellRunner(this.Logger, e.Message, e.Response);
-            runner.Execute();
+            using (var container = new WindsorContainer())
+            {
+                container.Install(Configuration.FromAppConfig());
+                var agent = container.Resolve<IAgent>();
+                agent.Execute(e.Message, e.Response);
+            }
         }
 
         #endregion

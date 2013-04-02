@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Management.Automation.Host;
 
-namespace AutoBot.Core.Host
+namespace AutoBot.Agents.PowerShell
 {
 
-    public sealed class AutoBotRawUserInterface : PSHostRawUserInterface
+    internal sealed class RawUserInterface : PSHostRawUserInterface
     {
 
         #region Fields

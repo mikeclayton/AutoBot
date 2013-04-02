@@ -6,7 +6,7 @@ using System.Text;
 namespace AutoBot.Core.Engine
 {
 
-    public sealed class PowerShellCommand
+    internal sealed class PowerShellCommand
     {
 
         public PowerShellCommand(string command)
