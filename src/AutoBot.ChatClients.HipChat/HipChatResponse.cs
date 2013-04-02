@@ -9,7 +9,11 @@ using jabber.protocol.client;
 namespace AutoBot.ChatClients.HipChat
 {
 
-    internal sealed class HipChatResponse : IChatResponse
+    /// <summary>
+    /// Represents a response channel that can be used to write
+    /// response text while processing HipChat chat messages.
+    /// </summary>
+    public sealed class HipChatResponse : IChatResponse
     {
 
         #region Constructors
@@ -47,6 +51,10 @@ namespace AutoBot.ChatClients.HipChat
 
         #region IChatResponse Interface
 
+        /// <summary>
+        /// Writes a message to the chat client response channel.
+        /// </summary>
+        /// <param name="text">The text to write to the chat client.</param>
         public void Write(string text)
         {
             this.Session.SendResponse(this.MessageType, this.ReplyTo, text);

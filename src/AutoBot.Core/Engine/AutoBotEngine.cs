@@ -8,12 +8,12 @@ using Castle.Windsor.Installer;
 namespace AutoBot.Core.Engine
 {
 
-    public sealed class BotEngine : MarshalByRefObject
+    public sealed class AutoBotEngine : MarshalByRefObject
     {
 
         #region Constructors
 
-        public BotEngine(ILogger logger, IChatSession session)
+        public AutoBotEngine(ILogger logger, IChatSession session)
         {
             this.Logger = logger;
             this.Session = session;
@@ -87,8 +87,8 @@ namespace AutoBot.Core.Engine
             using (var container = new WindsorContainer())
             {
                 container.Install(Configuration.FromAppConfig());
-                var agent = container.Resolve<IAgent>();
-                agent.Execute(e.Message, e.Response);
+                var agent = container.Resolve<IAutoBotAgent>();
+                agent.ProcessMessage(e.Message, e.Response);
             }
         }
 

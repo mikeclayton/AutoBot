@@ -1,12 +1,10 @@
 ﻿using System;
 using System.ServiceProcess;
-using log4net;
+using System.Threading;
 using AutoBot.Core.Engine;
-using AutoBot.Core.Chat;
 using Castle.Windsor;
 using Castle.Windsor.Installer;
-using Castle.MicroKernel.Registration;
-using System.Threading;
+using log4net;
 
 namespace AutoBot
 {
@@ -30,7 +28,7 @@ namespace AutoBot
                     using (var container = new WindsorContainer())
                     {
                         container.Install(Configuration.FromAppConfig());
-                        BotEngine botEngine = container.Resolve<BotEngine>();
+                        var botEngine = container.Resolve<AutoBotEngine>();
                         botEngine.Start();
                         // "start" is synchronous so we'll use a manual reset event
                         // to pause this thread forever. client events will continue to

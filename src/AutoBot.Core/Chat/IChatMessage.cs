@@ -6,16 +6,19 @@ using System.Text;
 namespace AutoBot.Core.Chat
 {
 
+    /// <summary>
+    /// Represents the text in a chat message received from a chat client.
+    /// </summary>
     public interface IChatMessage
     {
 
         /// <summary>
-        /// Gets the original text received by the chat client.
+        /// Gets the original text of the message received by the chat client.
         /// </summary>
         string OriginalText { get; }
 
         /// <summary>
-        /// Gets the pre-processed command to execute by the engine.
+        /// Gets the pre-processed command text to execute by the engine.
         /// </summary>
         string CommandText { get; }
 

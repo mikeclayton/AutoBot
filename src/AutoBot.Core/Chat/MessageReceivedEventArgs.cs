@@ -9,11 +9,17 @@ namespace AutoBot.Core.Chat
     public sealed class MessageReceivedEventArgs : EventArgs
     {
 
+        #region Constructors
+
         public MessageReceivedEventArgs(IChatMessage message, IChatResponse response)
         {
             this.Message = message;
             this.Response = response;
         }
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// Gets a reference to the message object received by the chat session.
@@ -33,6 +39,8 @@ namespace AutoBot.Core.Chat
             get;
             private set;
         }
+
+        #endregion
 
     }
 

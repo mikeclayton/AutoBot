@@ -47,9 +47,8 @@
     <Compile Include="Chat\IChatResponse.cs" />
     <Compile Include="Chat\IChatSession.cs" />
     <Compile Include="Chat\MessageReceivedEventArgs.cs" />
-    <Compile Include="Engine\BotEngine.cs" />
-    <Compile Include="Engine\ExitCode.cs" />
-    <Compile Include="Engine\IAgent.cs" />
+    <Compile Include="Engine\AutoBotEngine.cs" />
+    <Compile Include="Engine\IAutoBotAgent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

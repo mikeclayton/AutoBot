@@ -1,10 +1,8 @@
-﻿using System;
-using System.ServiceProcess;
-using log4net;
-using AutoBot.Core.Chat;
+﻿using System.ServiceProcess;
 using AutoBot.Core.Engine;
 using Castle.Windsor;
 using Castle.Windsor.Installer;
+using log4net;
 
 namespace AutoBot
 {
@@ -12,7 +10,7 @@ namespace AutoBot
     {
 
         private static readonly ILog Logger = LogManager.GetLogger(typeof(Service));
-        private BotEngine _botEngine;
+        private AutoBotEngine _botEngine;
 
         public Service()
         {
@@ -25,7 +23,7 @@ namespace AutoBot
             using (var container = new WindsorContainer())
             {
                 container.Install(Configuration.FromAppConfig());
-                _botEngine = container.Resolve<BotEngine>();
+                _botEngine = container.Resolve<AutoBotEngine>();
                 _botEngine.Start();
             }
         }

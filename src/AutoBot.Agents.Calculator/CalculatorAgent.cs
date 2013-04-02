@@ -9,12 +9,12 @@ using NCalc;
 namespace AutoBot.Agents.Calculator
 {
 
-    public sealed class CalculatorAgent : IAgent
+    public sealed class CalculatorAgent : IAutoBotAgent
     {
 
-        #region IAgent Interface
+        #region IAutoBotAgent Interface
 
-        public void Execute(IChatMessage message, IChatResponse response)
+        public void ProcessMessage(IChatMessage message, IChatResponse response)
         {
             var expression = new Expression(message.CommandText);
             response.Write(expression.Evaluate().ToString());

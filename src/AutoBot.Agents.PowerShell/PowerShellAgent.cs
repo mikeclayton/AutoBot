@@ -11,7 +11,7 @@ using Castle.Core.Logging;
 namespace AutoBot.Agents.PowerShell
 {
 
-    public sealed class PowerShellAgent : IAgent
+    public sealed class PowerShellAgent : IAutoBotAgent
     {
 
         #region Constructors
@@ -41,9 +41,9 @@ namespace AutoBot.Agents.PowerShell
 
         #endregion
 
-        #region IAgent Interface
+        #region IAutoBotAgent Interface
 
-        public void Execute(IChatMessage message, IChatResponse response)
+        public void ProcessMessage(IChatMessage message, IChatResponse response)
         {
             // parse the command so we know what to run
             var command = this.ParseCommand(message.CommandText);

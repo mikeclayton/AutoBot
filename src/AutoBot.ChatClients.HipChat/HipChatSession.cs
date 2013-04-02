@@ -272,7 +272,7 @@ namespace AutoBot.ChatClients.HipChat
 
         #region Methods
 
-        public void OnMessageReceived(Message message)
+        private void OnMessageReceived(Message message)
         {
             // take a local copy of the event so we don't get a race condition on the next line
             var handler = this.MessageReceived;
@@ -298,7 +298,7 @@ namespace AutoBot.ChatClients.HipChat
             }
         }
 
-        public void SendResponse(MessageType messageType, string replyTo, string message)
+        internal void SendResponse(MessageType messageType, string replyTo, string message)
         {
             _mJabberClient.Message(messageType, replyTo, message);
         }
