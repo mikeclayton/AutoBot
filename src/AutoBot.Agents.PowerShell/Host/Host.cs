@@ -3,10 +3,10 @@ using System.Management.Automation.Host;
 using System.Threading;
 using Castle.Core.Logging;
 
-namespace AutoBot.Core.Host
+namespace AutoBot.Agents.PowerShell
 {
 
-    public sealed class AutoBotHost : PSHost
+    internal sealed class Host : PSHost
     {
 
         #region Fields
@@ -18,7 +18,7 @@ namespace AutoBot.Core.Host
 
         #region Constructors
 
-        public AutoBotHost(ILogger logger)
+        public Host(ILogger logger)
             : base()
         {
             this.Logger = logger;
@@ -99,13 +99,13 @@ namespace AutoBot.Core.Host
             throw new NotImplementedException();
         }
 
-        public override System.Management.Automation.Host.PSHostUserInterface UI
+        public override PSHostUserInterface UI
         {
             get
             {
                 if (m_UI == null)
                 {
-                    m_UI = new AutoBotUserInterface(this.Logger);
+                    m_UI = new UserInterface(this.Logger);
                 }
                 return m_UI;
             }

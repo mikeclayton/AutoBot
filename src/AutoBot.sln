@@ -18,6 +18,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoBot.ChatClients.HipChat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoBot.ChatClients.Skype", "AutoBot.ChatClients.Skype\AutoBot.ChatClients.Skype.csproj", "{BF08BFAC-2089-4779-8557-1D76E0DC24E5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoBot.Agents.PowerShell", "AutoBot.Agents.PowerShell\AutoBot.Agents.PowerShell.csproj", "{AAAF23E6-595E-4A09-8498-D8B58A8917AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoBot.Agents.Calculator", "AutoBot.Agents.Calculator\AutoBot.Agents.Calculator.csproj", "{E5C817FB-875E-44F0-AA74-461745077D09}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = AutoBot.vsmdi
@@ -81,6 +85,26 @@ Global
 		{BF08BFAC-2089-4779-8557-1D76E0DC24E5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{BF08BFAC-2089-4779-8557-1D76E0DC24E5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{BF08BFAC-2089-4779-8557-1D76E0DC24E5}.Release|x86.ActiveCfg = Release|Any CPU
+		{AAAF23E6-595E-4A09-8498-D8B58A8917AA}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{AAAF23E6-595E-4A09-8498-D8B58A8917AA}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{AAAF23E6-595E-4A09-8498-D8B58A8917AA}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{AAAF23E6-595E-4A09-8498-D8B58A8917AA}.Debug|x86.ActiveCfg = Debug|x86
+		{AAAF23E6-595E-4A09-8498-D8B58A8917AA}.Debug|x86.Build.0 = Debug|x86
+		{AAAF23E6-595E-4A09-8498-D8B58A8917AA}.Release|Any CPU.ActiveCfg = Release|x86
+		{AAAF23E6-595E-4A09-8498-D8B58A8917AA}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{AAAF23E6-595E-4A09-8498-D8B58A8917AA}.Release|Mixed Platforms.Build.0 = Release|x86
+		{AAAF23E6-595E-4A09-8498-D8B58A8917AA}.Release|x86.ActiveCfg = Release|x86
+		{AAAF23E6-595E-4A09-8498-D8B58A8917AA}.Release|x86.Build.0 = Release|x86
+		{E5C817FB-875E-44F0-AA74-461745077D09}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{E5C817FB-875E-44F0-AA74-461745077D09}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{E5C817FB-875E-44F0-AA74-461745077D09}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{E5C817FB-875E-44F0-AA74-461745077D09}.Debug|x86.ActiveCfg = Debug|x86
+		{E5C817FB-875E-44F0-AA74-461745077D09}.Debug|x86.Build.0 = Debug|x86
+		{E5C817FB-875E-44F0-AA74-461745077D09}.Release|Any CPU.ActiveCfg = Release|x86
+		{E5C817FB-875E-44F0-AA74-461745077D09}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{E5C817FB-875E-44F0-AA74-461745077D09}.Release|Mixed Platforms.Build.0 = Release|x86
+		{E5C817FB-875E-44F0-AA74-461745077D09}.Release|x86.ActiveCfg = Release|x86
+		{E5C817FB-875E-44F0-AA74-461745077D09}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

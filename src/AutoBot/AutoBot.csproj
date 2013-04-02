@@ -62,19 +62,8 @@
     <Reference Include="Castle.Windsor">
       <HintPath>..\..\lib\packages\Castle.Windsor.3.2.0\lib\net40\Castle.Windsor.dll</HintPath>
     </Reference>
-    <Reference Include="EasyHttp, Version=1.4.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\packages\EasyHttp.1.4.2.0\lib\net40\EasyHttp.dll</HintPath>
-    </Reference>
-    <Reference Include="JsonFx, Version=2.0.1106.2610, Culture=neutral, PublicKeyToken=315052dd637f8a52, processorArchitecture=MSIL">
-      <HintPath>..\..\lib\packages\JsonFx.2.0.1106.2610\lib\net40\JsonFx.dll</HintPath>
-    </Reference>
     <Reference Include="log4net">
       <HintPath>..\..\lib\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="netlib.Dns, Version=1.1.4174.29233, Culture=neutral, PublicKeyToken=924c5b18328d6f09, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\netlib.Dns.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -84,13 +73,6 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TeamCitySharp">
-      <HintPath>..\..\lib\TeamCitySharp.dll</HintPath>
-    </Reference>
-    <Reference Include="zlib.net, Version=1.0.3.0, Culture=neutral, PublicKeyToken=924c5b18328d6f09, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\zlib.net.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Service.cs">
@@ -140,6 +122,14 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AutoBot.Agents.Calculator\AutoBot.Agents.Calculator.csproj">
+      <Project>{E5C817FB-875E-44F0-AA74-461745077D09}</Project>
+      <Name>AutoBot.Agents.Calculator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AutoBot.Agents.PowerShell\AutoBot.Agents.PowerShell.csproj">
+      <Project>{AAAF23E6-595E-4A09-8498-D8B58A8917AA}</Project>
+      <Name>AutoBot.Agents.PowerShell</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AutoBot.ChatClients.HipChat\AutoBot.ChatClients.HipChat.csproj">
       <Project>{3C7C21F8-F86A-470D-8D68-87B1939C23D1}</Project>
       <Name>AutoBot.ChatClients.HipChat</Name>
