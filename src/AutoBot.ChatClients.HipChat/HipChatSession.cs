@@ -203,9 +203,33 @@ namespace AutoBot.ChatClients.HipChat
                 foreach (DiscoNode dn in node.Children)
                 {
                     Logger.Info(string.Format("Subscribing to: {0}:{1}", dn.JID, dn.Name));
-                    // we have to build a new JID here, with the nickname included http://xmpp.org/extensions/xep-0045.html#enter-muc
-                    JID subscriptionJid = new JID(dn.JID.User, dn.JID.Server, "AutoBot .");
-                    _jabberClient.Subscribe(subscriptionJid, this.NickName, null);
+                    // hipchat no longer supports Groupchat 1.0 Protocol to enter rooms,
+                    // but jabber.net uses Groupchat to join rooms so we have to create
+                    // a Basic MUC Protocol message by hand instead.
+                    //
+                    // see http://help.hipchat.com/knowledgebase/articles/64377-xmpp-jabber-support-details
+                    //     http://xmpp.org/extensions/xep-0045.html#enter-gc
+                    //     http://xmpp.org/extensions/xep-0045.html#enter-muc
+                    var presenceMessage = new XmlDocument();
+                    presenceMessage.LoadXml("<presence from='{0}' id='{1}' to='{2}'>" +
+                                            "  <x xmlns='http://jabber.org/protocol/muc'/>" +
+                                            "</presence>");
+                    // set the "from" value
+                    var presenceFrom = presenceMessage.SelectSingleNode("presence/@from");
+                    if (presenceFrom == null)
+                    {
+                        throw new InvalidOperationException();
+                    }
+                    presenceFrom.InnerText = new JID(this.UserName, dn.JID.Server, this.Resource);
+                    // set the "to" value
+                    var presenceTo = presenceMessage.SelectSingleNode("presence/@to");
+                    if (presenceTo == null)
+                    {
+                        throw new InvalidOperationException();
+                    }
+                    presenceTo.InnerText = new JID(dn.JID.User, dn.JID.Server, this.NickName); ;
+                    // write the message
+                    _jabberClient.Write(presenceMessage.DocumentElement);
                 }
             }
         }
