@@ -314,13 +314,19 @@ namespace AutoBot.ChatClients.HipChat
             {
                 return;
             }
-            // extract the chat text
+            // skip blank messages
             if (message.Body == null && message.X == null)
             {
                 return;
             }
+            // skip messages from the bot
+            if (message.From.Resource == this.NickName)
+            {
+                return;
+            }
+            // extract the chat text
             var commandText = (message.Body == null) ? message.X.InnerText.Trim() : message.Body.Trim();
-            if (message.Type == MessageType.groupchat && commandText.Trim().StartsWith(this.MentionName))
+            if ((message.Type == MessageType.groupchat) && commandText.Trim().StartsWith(this.MentionName))
             {
                 commandText = this.RemoveMentionFromMessage(commandText);
             }
