@@ -6,7 +6,8 @@ using System;
 namespace AutoBot.ChatClients.Skype
 {
 
-    public class SkypeSession : IChatSession
+    [Obsolete("Skype no longer supports a desktop API")]
+    public sealed class SkypeSession : IChatSession
     {
 
         #region Fields

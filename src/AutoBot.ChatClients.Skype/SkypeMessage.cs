@@ -7,6 +7,7 @@ namespace AutoBot.ChatClients.Skype
     /// <summary>
     /// Represents the text in a chat message received from a Skype chat client.
     /// </summary>
+    [Obsolete("Skype no longer supports a desktop API")]
     public sealed class SkypeMessage : IChatMessage
     {
 

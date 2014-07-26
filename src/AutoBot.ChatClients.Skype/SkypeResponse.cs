@@ -9,7 +9,8 @@ namespace AutoBot.ChatClients.Skype
     /// Represents a response channel that can be used to write
     /// response text while processing Skype chat messages.
     /// </summary>
-    public class SkypeResponse : IChatResponse
+    [Obsolete("Skype no longer supports a desktop API")]
+    public sealed class SkypeResponse : IChatResponse
     {
 
         #region Constructors
