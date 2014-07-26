@@ -1,5 +1,6 @@
 ﻿namespace AutoBot
 {
+
     partial class Service
     {
         /// <summary> 
@@ -34,4 +35,5 @@
 
         #endregion
     }
+
 }

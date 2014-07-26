@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Management.Automation.Host;
 
-namespace AutoBot.Agents.PowerShell
+namespace AutoBot.Agents.PowerShell.Host
 {
 
     /// <summary>
@@ -15,13 +15,16 @@ namespace AutoBot.Agents.PowerShell
     internal sealed class RawUserInterface : PSHostRawUserInterface
     {
 
-        #region Fields
+        #region Constructors
 
-        private Size m_BufferSize = new Size(80, 25);
-        private ConsoleColor m_BackgroundColor = ConsoleColor.Black;
-        private ConsoleColor m_ForegroundColor = ConsoleColor.White;
-        private Coordinates m_CursorPosition = new Coordinates(0, 0);
-        private int m_CursorSize = 1;
+        public RawUserInterface()
+        {
+            this.BufferSize = new Size(80, 25);
+            this.BackgroundColor = ConsoleColor.Black;
+            this.ForegroundColor = ConsoleColor.White;
+            this.CursorPosition = new Coordinates(0, 0);
+            this.CursorSize = 1;
+        }
 
         #endregion
 
@@ -32,14 +35,8 @@ namespace AutoBot.Agents.PowerShell
         /// </summary>
         public override ConsoleColor BackgroundColor
         {
-            get
-            {
-                return m_BackgroundColor;
-            }
-            set
-            {
-                m_BackgroundColor = value;
-            }
+            get;
+            set;
         }
 
         /// <summary>
@@ -47,14 +44,8 @@ namespace AutoBot.Agents.PowerShell
         /// </summary>
         public override Size BufferSize
         {
-            get
-            {
-                return m_BufferSize;
-            }
-            set
-            {
-                m_BufferSize = value;
-            }
+            get;
+            set;
         }
 
         /// <summary>
@@ -62,14 +53,8 @@ namespace AutoBot.Agents.PowerShell
         /// </summary>
         public override Coordinates CursorPosition
         {
-            get
-            {
-                return m_CursorPosition;
-            }
-            set
-            {
-                m_CursorPosition = value;
-            }
+            get;
+            set;
         }
 
         /// <summary>
@@ -77,20 +62,15 @@ namespace AutoBot.Agents.PowerShell
         /// </summary>
         public override int CursorSize
         {
-            get
-            {
-                return m_CursorSize;
-            }
-            set
-            {
-                m_CursorSize = value;
-            }
+            get;
+            set;
         }
 
         /// <summary>
         /// When overridden in a derived class, flushes the input buffer.
         /// All input currently in the buffer is discarded. 
         /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
         public override void FlushInputBuffer()
         {
             throw new NotImplementedException();
@@ -101,20 +81,15 @@ namespace AutoBot.Agents.PowerShell
         /// </summary>
         public override ConsoleColor ForegroundColor
         {
-            get
-            {
-                return m_ForegroundColor;
-            }
-            set
-            {
-                m_ForegroundColor = value;
-            }
+            get;
+            set;
         }
 
         /// <summary>
         /// Retrieves a rectangular region of the screen buffer.
         /// </summary>
         /// <param name="rectangle"></param>
+        /// <exception cref="NotImplementedException"></exception>
         /// <returns></returns>
         public override BufferCell[,] GetBufferContents(Rectangle rectangle)
         {
@@ -126,7 +101,10 @@ namespace AutoBot.Agents.PowerShell
         /// </summary>
         public override bool KeyAvailable
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                throw new NotImplementedException();
+            }
         }
 
         /// <summary>
@@ -166,7 +144,10 @@ namespace AutoBot.Agents.PowerShell
         /// </summary>
         public override Size MaxPhysicalWindowSize
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                throw new NotImplementedException();
+            }
         }
 
         /// <summary>
@@ -175,7 +156,10 @@ namespace AutoBot.Agents.PowerShell
         /// </summary>
         public override Size MaxWindowSize
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                throw new NotImplementedException();
+            }
         }
 
         /// <summary>

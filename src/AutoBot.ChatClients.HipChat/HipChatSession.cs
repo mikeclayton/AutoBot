@@ -1,16 +1,15 @@
-﻿using System;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading;
-using AutoBot.Core.Chat;
+﻿using AutoBot.Core.Chat;
+using Castle.Core.Logging;
 using jabber;
 using jabber.client;
 using jabber.connection;
 using jabber.protocol;
 using jabber.protocol.client;
 using jabber.protocol.iq;
-using System.Configuration;
-using Castle.Core.Logging;
+using System;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading;
 
 namespace AutoBot.ChatClients.HipChat
 {
@@ -26,16 +25,15 @@ namespace AutoBot.ChatClients.HipChat
 
         #region Fields
 
-        private JabberClient _mJabberClient;
-        private DiscoManager _mDiscoManager;
-        private PresenceManager _mPresenceManager;
+        private JabberClient _jabberClient;
+        private DiscoManager _discoManager;
+        private PresenceManager _presenceManager;
 
         #endregion
 
         #region Constructors
 
         public HipChatSession(ILogger logger)
-            : base()
         {
             this.Logger = logger;
         }
@@ -108,7 +106,7 @@ namespace AutoBot.ChatClients.HipChat
 
         private void jabber_OnRegistered(object sender, IQ iq)
         {
-            _mJabberClient.Login();
+            _jabberClient.Login();
         }
 
         private void jabber_OnDisconnect(object sender)
@@ -120,7 +118,7 @@ namespace AutoBot.ChatClients.HipChat
         private void jabber_OnStreamInit(object o, ElementStream elementStream)
         {
             var client = (JabberClient)o;
-            _mDiscoManager.Stream = client;
+            _discoManager.Stream = client;
         }
 
         private void jabber_OnConnect(object o, StanzaStream s)
@@ -132,7 +130,7 @@ namespace AutoBot.ChatClients.HipChat
         private void jabber_OnAuthenticate(object o)
         {
             Logger.Info("Authenticated");
-            _mDiscoManager.BeginFindServiceWithFeature(URI.MUC, hlp_DiscoHandler_FindServiceWithFeature, new object());
+            _discoManager.BeginFindServiceWithFeature(URI.MUC, hlp_DiscoHandler_FindServiceWithFeature, new object());
         }
 
         private bool jabber_OnInvalidCertificate(object o, X509Certificate cert, X509Chain chain, SslPolicyErrors errors)
@@ -180,7 +178,7 @@ namespace AutoBot.ChatClients.HipChat
             if (node == null)
                 return;
             if (node.Name == "Rooms")
-                _mDiscoManager.BeginGetItems(node, hlp_DiscoHandler_SubscribeToRooms, new object());
+                _discoManager.BeginGetItems(node, hlp_DiscoHandler_SubscribeToRooms, new object());
         }
 
         private void hlp_DiscoHandler_SubscribeToRooms(DiscoManager sender, DiscoNode node, object state)
@@ -195,7 +193,7 @@ namespace AutoBot.ChatClients.HipChat
                     Logger.Info(string.Format("Subscribing to: {0}:{1}", dn.JID, dn.Name));
                     // we have to build a new JID here, with the nickname included http://xmpp.org/extensions/xep-0045.html#enter-muc
                     JID subscriptionJid = new JID(dn.JID.User, dn.JID.Server, "AutoBot .");
-                    _mJabberClient.Subscribe(subscriptionJid, this.NickName, null);
+                    _jabberClient.Subscribe(subscriptionJid, this.NickName, null);
                 }
             }
         }
@@ -206,7 +204,7 @@ namespace AutoBot.ChatClients.HipChat
 
         private void presenceManager_OnPrimarySessionChange(object sender, JID bare)
         {
-            if (bare.Bare.Equals(_mJabberClient.JID.Bare, StringComparison.InvariantCultureIgnoreCase))
+            if (bare.Bare.Equals(_jabberClient.JID.Bare, StringComparison.InvariantCultureIgnoreCase))
                 return;
         }
 
@@ -216,7 +214,7 @@ namespace AutoBot.ChatClients.HipChat
 
         public void Connect()
         {
-            _mJabberClient = new JabberClient
+            _jabberClient = new JabberClient
             {
                 Server = this.Server,
                 User = this.UserName,
@@ -229,43 +227,43 @@ namespace AutoBot.ChatClients.HipChat
                 AutoReconnect = -1,
                 AutoLogin = true
             };
-            _mPresenceManager = new PresenceManager
+            _presenceManager = new PresenceManager
             {
-                Stream = _mJabberClient
+                Stream = _jabberClient
             };
-            _mDiscoManager = new DiscoManager();
-            _mPresenceManager.OnPrimarySessionChange += presenceManager_OnPrimarySessionChange;
-            _mJabberClient.OnConnect += jabber_OnConnect;
-            _mJabberClient.OnAuthenticate += jabber_OnAuthenticate;
-            _mJabberClient.OnInvalidCertificate += jabber_OnInvalidCertificate;
-            _mJabberClient.OnError += jabber_OnError;
-            _mJabberClient.OnReadText += jabber_OnReadText;
-            _mJabberClient.OnWriteText += jabber_OnWriteText;
-            _mJabberClient.OnStreamInit += jabber_OnStreamInit;
-            _mJabberClient.OnDisconnect += jabber_OnDisconnect;
-            _mJabberClient.OnRegistered += jabber_OnRegistered;
-            _mJabberClient.OnRegisterInfo += jabber_OnRegisterInfo;
-            _mJabberClient.OnMessage += jabber_OnMessage;
+            _discoManager = new DiscoManager();
+            _presenceManager.OnPrimarySessionChange += presenceManager_OnPrimarySessionChange;
+            _jabberClient.OnConnect += jabber_OnConnect;
+            _jabberClient.OnAuthenticate += jabber_OnAuthenticate;
+            _jabberClient.OnInvalidCertificate += jabber_OnInvalidCertificate;
+            _jabberClient.OnError += jabber_OnError;
+            _jabberClient.OnReadText += jabber_OnReadText;
+            _jabberClient.OnWriteText += jabber_OnWriteText;
+            _jabberClient.OnStreamInit += jabber_OnStreamInit;
+            _jabberClient.OnDisconnect += jabber_OnDisconnect;
+            _jabberClient.OnRegistered += jabber_OnRegistered;
+            _jabberClient.OnRegisterInfo += jabber_OnRegisterInfo;
+            _jabberClient.OnMessage += jabber_OnMessage;
             // connect to the HipChat server
-            Logger.Info(string.Format("Connecting to '{0}'", _mJabberClient.Server));
-            _mJabberClient.Connect();
-            int retryCountLimit = 10;
-            while (!_mJabberClient.IsAuthenticated && retryCountLimit > 0)
+            Logger.Info(string.Format("Connecting to '{0}'", _jabberClient.Server));
+            _jabberClient.Connect();
+            var retryCountLimit = 10;
+            while (!_jabberClient.IsAuthenticated && retryCountLimit > 0)
             {
                 Logger.Info(string.Format("Waiting..."));
                 retryCountLimit--;
                 Thread.Sleep(1000);
             }
-            if (_mJabberClient.IsAuthenticated)
+            if (_jabberClient.IsAuthenticated)
             {
-                Logger.Info(string.Format("Authenticated as '{0}'", _mJabberClient.User));
+                Logger.Info(string.Format("Authenticated as '{0}'", _jabberClient.User));
             }
         }
 
         public void Disconnect()
         {
-            this.Logger.Info(string.Format("Disconnecting from '{0}'", _mJabberClient.Server));
-            _mJabberClient.Close();
+            this.Logger.Info(string.Format("Disconnecting from '{0}'", _jabberClient.Server));
+            _jabberClient.Close();
         }
 
         #endregion
@@ -274,38 +272,39 @@ namespace AutoBot.ChatClients.HipChat
 
         private void OnMessageReceived(Message message)
         {
-            // take a local copy of the event so we don't get a race condition on the next line
+            // take a local copy of the event so we don't get a race condition further down
             var handler = this.MessageReceived;
-            if (handler != null)
+            if (handler == null)
             {
-                // extract the chat text
-                if (message.Body == null && message.X == null)
-                {
-                    return;
-                }
-                var commandText = message.Body == null ? message.X.InnerText.Trim() : message.Body.Trim();
-                if (message.Type == MessageType.groupchat && commandText.Trim().StartsWith(this.MentionName))
-                {
-                    commandText = this.RemoveMentionFromMessage(commandText);
-                }
-                // build the chat message and response to pass to the event handler
-                var chatMessage = new HipChatMessage(message.Type, message.Body, commandText);
-                var responseJid = new JID(message.From.User, message.From.Server, message.From.Resource);
-                var chatResponse = new HipChatResponse(this, responseJid, message.Type);
-                var args = new MessageReceivedEventArgs(chatMessage, chatResponse);
-                // call the event handler
-                handler(this, args);
+                return;
             }
+            // extract the chat text
+            if (message.Body == null && message.X == null)
+            {
+                return;
+            }
+            var commandText = (message.Body == null) ? message.X.InnerText.Trim() : message.Body.Trim();
+            if (message.Type == MessageType.groupchat && commandText.Trim().StartsWith(this.MentionName))
+            {
+                commandText = this.RemoveMentionFromMessage(commandText);
+            }
+            // build the chat message and response to pass to the event handler
+            var chatMessage = new HipChatMessage(message.Type, message.Body, commandText);
+            var responseJid = new JID(message.From.User, message.From.Server, message.From.Resource);
+            var chatResponse = new HipChatResponse(this, responseJid, message.Type);
+            var args = new MessageReceivedEventArgs(chatMessage, chatResponse);
+            // call the event handler
+            handler(this, args);
         }
 
         internal void SendResponse(MessageType messageType, string replyTo, string message)
         {
-            _mJabberClient.Message(messageType, replyTo, message);
+            _jabberClient.Message(messageType, replyTo, message);
         }
 
         private string RemoveMentionFromMessage(string chatText)
         {
-            //TODO: Remove all @'s
+            // TODO: Remove all @'s
             return chatText.Replace(this.MentionName, string.Empty).Trim();
         }
 

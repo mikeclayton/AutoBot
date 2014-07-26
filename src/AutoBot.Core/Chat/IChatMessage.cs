@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace AutoBot.Core.Chat
+﻿namespace AutoBot.Core.Chat
 {
 
     /// <summary>
@@ -15,12 +10,18 @@ namespace AutoBot.Core.Chat
         /// <summary>
         /// Gets the original text of the message received by the chat client.
         /// </summary>
-        string OriginalText { get; }
+        string OriginalText
+        {
+            get;
+        }
 
         /// <summary>
         /// Gets the pre-processed command text to execute by the engine.
         /// </summary>
-        string CommandText { get; }
+        string CommandText
+        {
+            get;
+        }
 
     }
 

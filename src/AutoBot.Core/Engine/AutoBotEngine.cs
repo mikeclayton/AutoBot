@@ -1,9 +1,9 @@
-using System;
-using System.Threading;
 using AutoBot.Core.Chat;
 using Castle.Core.Logging;
 using Castle.Windsor;
 using Castle.Windsor.Installer;
+using System;
+using System.Threading;
 
 namespace AutoBot.Core.Engine
 {

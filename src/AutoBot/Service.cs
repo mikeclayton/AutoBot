@@ -1,12 +1,13 @@
-﻿using System.ServiceProcess;
-using AutoBot.Core.Engine;
+﻿using AutoBot.Core.Engine;
 using Castle.Windsor;
 using Castle.Windsor.Installer;
 using log4net;
+using System.ServiceProcess;
 
 namespace AutoBot
 {
-    partial class Service : ServiceBase
+
+    internal sealed partial class Service : ServiceBase
     {
 
         private static readonly ILog Logger = LogManager.GetLogger(typeof(Service));
@@ -34,5 +35,7 @@ namespace AutoBot
             Logger.Info("Stopping AutoBot Windows service");
             _botEngine.Stop();
         }
+
     }
+
 }

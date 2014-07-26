@@ -1,15 +1,15 @@
-﻿using System;
-using System.ServiceProcess;
-using System.Threading;
-using AutoBot.Core.Engine;
+﻿using AutoBot.Core.Engine;
 using Castle.Windsor;
 using Castle.Windsor.Installer;
 using log4net;
+using System;
+using System.ServiceProcess;
+using System.Threading;
 
 namespace AutoBot
 {
 
-    class Program
+    internal sealed class Program
     {
 
         private static readonly ILog Logger = LogManager.GetLogger(typeof(Program));

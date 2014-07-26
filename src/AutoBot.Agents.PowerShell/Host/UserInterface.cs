@@ -1,10 +1,11 @@
-﻿using System;
+﻿using System.Globalization;
+using Castle.Core.Logging;
+using System;
 using System.Collections.Generic;
 using System.Management.Automation;
 using System.Management.Automation.Host;
-using Castle.Core.Logging;
 
-namespace AutoBot.Agents.PowerShell
+namespace AutoBot.Agents.PowerShell.Host
 {
 
     /// <summary>
@@ -20,7 +21,7 @@ namespace AutoBot.Agents.PowerShell
 
         #region Fields
 
-        private PSHostRawUserInterface m_RawUI;
+        private PSHostRawUserInterface _rawUi;
 
         #endregion
 
@@ -66,6 +67,7 @@ namespace AutoBot.Agents.PowerShell
         /// <param name="caption"></param>
         /// <param name="message"></param>
         /// <param name="descriptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
         /// <returns></returns>
         public override Dictionary<string, PSObject> Prompt(string caption, string message, System.Collections.ObjectModel.Collection<FieldDescription> descriptions)
         {
@@ -80,6 +82,7 @@ namespace AutoBot.Agents.PowerShell
         /// <param name="message"></param>
         /// <param name="choices"></param>
         /// <param name="defaultChoice"></param>
+        /// <exception cref="NotImplementedException"></exception>
         /// <returns></returns>
         public override int PromptForChoice(string caption, string message, System.Collections.ObjectModel.Collection<ChoiceDescription> choices, int defaultChoice)
         {
@@ -98,6 +101,7 @@ namespace AutoBot.Agents.PowerShell
         /// <param name="targetName"></param>
         /// <param name="allowedCredentialTypes"></param>
         /// <param name="options"></param>
+        /// <exception cref="NotImplementedException"></exception>
         /// <returns></returns>
         public override PSCredential PromptForCredential(string caption, string message, string userName, string targetName, PSCredentialTypes allowedCredentialTypes, PSCredentialUIOptions options)
         {
@@ -129,11 +133,11 @@ namespace AutoBot.Agents.PowerShell
         {
             get
             {
-                if (m_RawUI == null)
+                if (_rawUi == null)
                 {
-                    m_RawUI = new RawUserInterface();
+                    _rawUi = new RawUserInterface();
                 }
-                return m_RawUI;
+                return _rawUi;
             }
         }
 
@@ -141,6 +145,7 @@ namespace AutoBot.Agents.PowerShell
         /// Reads characters that are entered by the user until a newline (carriage return) 
         /// character is encountered.
         /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
         /// <returns></returns>
         public override string ReadLine()
         {
@@ -151,6 +156,7 @@ namespace AutoBot.Agents.PowerShell
         /// Reads characters entered by the user until a newline (carriage return) character
         /// is encountered and returns the characters as a secure string.
         /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
         /// <returns></returns>
         public override System.Security.SecureString ReadLineAsSecureString()
         {
@@ -186,7 +192,6 @@ namespace AutoBot.Agents.PowerShell
         /// <summary>
         /// Writes characters to the output display of the host.
         /// </summary>
-        /// <param name="value"></param>
         public override void WriteLine()
         {
             this.WriteLine(string.Empty);
@@ -221,7 +226,7 @@ namespace AutoBot.Agents.PowerShell
         /// <param name="record"></param>
         public override void WriteProgress(long sourceId, ProgressRecord record)
         {
-            this.Write(record.PercentComplete.ToString());
+            this.Write(record.PercentComplete.ToString(CultureInfo.InvariantCulture));
         }
 
         #endregion

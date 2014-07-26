@@ -1,12 +1,13 @@
-﻿using System;
+﻿using AutoBot.Agents.PowerShell.Host;
+using AutoBot.Core.Chat;
+using AutoBot.Core.Engine;
+using Castle.Core.Logging;
+using System;
 using System.Collections;
 using System.IO;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Reflection;
-using AutoBot.Core.Chat;
-using AutoBot.Core.Engine;
-using Castle.Core.Logging;
 
 namespace AutoBot.Agents.PowerShell
 {
@@ -20,7 +21,12 @@ namespace AutoBot.Agents.PowerShell
         {
             // copy the parameters locally so the OnWrite handler can access them
             this.Logger = logger;
-            this.ScriptPath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Scripts");
+            var assemblyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            if (string.IsNullOrEmpty(assemblyPath))
+            {
+                throw new InvalidOperationException();
+            }
+            this.ScriptPath = Path.Combine(assemblyPath, "Scripts");
         }
 
         #endregion
@@ -60,12 +66,12 @@ namespace AutoBot.Agents.PowerShell
                 return;
             }
             // initialise the host
-            var host = new Host(this.Logger);
+            var host = new Host.Host(this.Logger);
             // add a handler for OnWrite events so we can bubble them up to the chat session
-            var hostUI = (host.UI as UserInterface);
-            if (hostUI != null)
+            var hostUi = (host.UI as UserInterface);
+            if (hostUi != null)
             {
-                hostUI.OnWrite += delegate(object sender, string value) { response.Write(value); };
+                hostUi.OnWrite += (sender, value) => response.Write(value);
             }
             // create a new initial state with the script module loaded
             var state = InitialSessionState.CreateDefault();

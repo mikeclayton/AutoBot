@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using AutoBot.Core.Chat;
+﻿using AutoBot.Core.Chat;
 using jabber.protocol.client;
 
 namespace AutoBot.ChatClients.HipChat
@@ -17,7 +13,6 @@ namespace AutoBot.ChatClients.HipChat
         #region Constructors
 
         public HipChatMessage(MessageType type, string originalText, string commandText)
-            : base()
         {
             this.Type = type;
             this.OriginalText = originalText;

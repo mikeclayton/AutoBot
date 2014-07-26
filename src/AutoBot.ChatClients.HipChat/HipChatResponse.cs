@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using AutoBot.Core.Chat;
+﻿using AutoBot.Core.Chat;
 using jabber;
 using jabber.protocol.client;
 

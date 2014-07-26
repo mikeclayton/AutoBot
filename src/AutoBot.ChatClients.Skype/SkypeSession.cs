@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SKYPE4COMLib;
-using AutoBot.Core.Chat;
+﻿using AutoBot.Core.Chat;
 using Castle.Core.Logging;
+using SKYPE4COMLib;
+using System;
 
 namespace AutoBot.ChatClients.Skype
 {
@@ -14,7 +11,7 @@ namespace AutoBot.ChatClients.Skype
 
         #region Fields
 
-        private SKYPE4COMLib.Skype m_Skype;
+        private SKYPE4COMLib.Skype _skype;
 
         #endregion
 
@@ -45,11 +42,11 @@ namespace AutoBot.ChatClients.Skype
         {
             get
             {
-                if (m_Skype == null)
+                if (_skype == null)
                 {
-                    m_Skype = new SKYPE4COMLib.Skype();
+                    _skype = new SKYPE4COMLib.Skype();
                 }
-                return m_Skype;
+                return _skype;
             }
         }
 
@@ -62,32 +59,32 @@ namespace AutoBot.ChatClients.Skype
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_ApplicationDatagram(SKYPE4COMLib.Application application, ApplicationStream applicationstream, String itext)
+        private void Skype_ApplicationDatagram(SKYPE4COMLib.Application application, ApplicationStream applicationstream, String itext)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_ApplicationReceiving(SKYPE4COMLib.Application application, ApplicationStreamCollection applicationstreamcollection)
+        private void Skype_ApplicationReceiving(SKYPE4COMLib.Application application, ApplicationStreamCollection applicationstreamcollection)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_ApplicationSending(SKYPE4COMLib.Application application, ApplicationStreamCollection applicationstreamcollection)
+        private void Skype_ApplicationSending(SKYPE4COMLib.Application application, ApplicationStreamCollection applicationstreamcollection)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_ApplicationStreams(SKYPE4COMLib.Application application, ApplicationStreamCollection applicationstreamcollection)
+        private void Skype_ApplicationStreams(SKYPE4COMLib.Application application, ApplicationStreamCollection applicationstreamcollection)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_AsyncSearchUsersFinished(int cookie, UserCollection usercollection)
+        private void Skype_AsyncSearchUsersFinished(int cookie, UserCollection usercollection)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_AttachmentStatus(TAttachmentStatus status)
+        private void Skype_AttachmentStatus(TAttachmentStatus status)
         {
             switch (status)
             {
@@ -103,67 +100,67 @@ namespace AutoBot.ChatClients.Skype
             }
         }
 
-        public void Skype_AutoAway(bool automatic)
+        private void Skype_AutoAway(bool automatic)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_CallDtmfReceived(Call call, string code)
+        private void Skype_CallDtmfReceived(Call call, string code)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_CallHistory()
+        private void Skype_CallHistory()
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_CallInputStatusChanged(Call call, bool status)
+        private void Skype_CallInputStatusChanged(Call call, bool status)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_CallSeenStatusChanged(Call call, bool status)
+        private void Skype_CallSeenStatusChanged(Call call, bool status)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_CallStatus(Call call, TCallStatus status)
+        private void Skype_CallStatus(Call call, TCallStatus status)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_CallTransferStatusChanged(Call call, TCallStatus status)
+        private void Skype_CallTransferStatusChanged(Call call, TCallStatus status)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_CallVideoReceiveStatusChanged(Call call, TCallVideoSendStatus status)
+        private void Skype_CallVideoReceiveStatusChanged(Call call, TCallVideoSendStatus status)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_CallVideoSendStatusChanged(Call call, TCallVideoSendStatus status)
+        private void Skype_CallVideoSendStatusChanged(Call call, TCallVideoSendStatus status)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_CallVideoStatusChanged(Call call, TCallVideoStatus status)
+        private void Skype_CallVideoStatusChanged(Call call, TCallVideoStatus status)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_ChatMembersChanged(Chat chat, UserCollection usercollection)
+        private void Skype_ChatMembersChanged(Chat chat, UserCollection usercollection)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_ChatMemberRoleChanged(IChatMember ichatmember, TChatMemberRole role)
+        private void Skype_ChatMemberRoleChanged(IChatMember ichatmember, TChatMemberRole role)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_Command(Command command)
+        private void Skype_Command(Command command)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
             this.Logger.Debug("    id       = " + command.Id);
@@ -172,53 +169,53 @@ namespace AutoBot.ChatClients.Skype
             this.Logger.Debug("    reply    = " + command.Reply);
         }
 
-        public void Skype_ConnectionStatus(TConnectionStatus status)
+        private void Skype_ConnectionStatus(TConnectionStatus status)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
             this.Logger.Debug("    status = " + status);
         }
 
-        public void Skype_ContactsFocused(string contacts)
+        private void Skype_ContactsFocused(string contacts)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_Error(Command command, int number, string description)
+        private void Skype_Error(Command command, int number, string description)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_FileTransferStatusChanged(IFileTransfer ifiletransfer, TFileTransferStatus status)
+        private void Skype_FileTransferStatusChanged(IFileTransfer ifiletransfer, TFileTransferStatus status)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_GroupDeleted(int group)
+        private void Skype_GroupDeleted(int group)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_GroupExpanded(Group group, bool expanded)
+        private void Skype_GroupExpanded(Group group, bool expanded)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_GroupUsers(Group group, UserCollection usercollection)
+        private void Skype_GroupUsers(Group group, UserCollection usercollection)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_GroupVisible(Group group, bool visible)
+        private void Skype_GroupVisible(Group group, bool visible)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_MessageHistory(string user)
+        private void Skype_MessageHistory(string user)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_MessageStatus(ChatMessage chatmessage, TChatMessageStatus status)
+        private void Skype_MessageStatus(ChatMessage chatmessage, TChatMessageStatus status)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
             this.Logger.Debug("    status = " + status);
@@ -239,27 +236,27 @@ namespace AutoBot.ChatClients.Skype
             }
         }
 
-        public void Skype_Mute(bool mute)
+        private void Skype_Mute(bool mute)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_OnlineStatus(User user, TOnlineStatus status)
+        private void Skype_OnlineStatus(User user, TOnlineStatus status)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_PluginEventClicked(PluginEvent pluginevent)
+        private void Skype_PluginEventClicked(PluginEvent pluginevent)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_PluginMenuItemClicked(PluginMenuItem pluginmenuitem, UserCollection usercollection, TPluginContext plugincontext, string contextid)
+        private void Skype_PluginMenuItemClicked(PluginMenuItem pluginmenuitem, UserCollection usercollection, TPluginContext plugincontext, string contextid)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_Reply(Command command)
+        private void Skype_Reply(Command command)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
             this.Logger.Debug("    id       = " + command.Id);
@@ -268,48 +265,48 @@ namespace AutoBot.ChatClients.Skype
             this.Logger.Debug("    reply    = " + command.Reply);
         }
 
-        public void Skype_SilentModeStatusChanged(bool silent)
+        private void Skype_SilentModeStatusChanged(bool silent)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_SmsMessageStatusChanged(SmsMessage smsmessage, TSmsMessageStatus status)
+        private void Skype_SmsMessageStatusChanged(SmsMessage smsmessage, TSmsMessageStatus status)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_SmsTargetStatusChanged(SmsTarget smstarget, TSmsTargetStatus status)
+        private void Skype_SmsTargetStatusChanged(SmsTarget smstarget, TSmsTargetStatus status)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_UILanguageChanged(string code)
+        private void Skype_UILanguageChanged(string code)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_UserAuthorizationRequestReceived(User user)
+        private void Skype_UserAuthorizationRequestReceived(User user)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_UserMood(User user, string moodtext)
+        private void Skype_UserMood(User user, string moodtext)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_UserStatus(TUserStatus status)
+        private void Skype_UserStatus(TUserStatus status)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
             this.Logger.Debug("    status = " + status);
         }
 
-        public void Skype_VoicemailStatus(Voicemail voicemail, TVoicemailStatus status)
+        private void Skype_VoicemailStatus(Voicemail voicemail, TVoicemailStatus status)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void Skype_WallpaperChanged(string path)
+        private void Skype_WallpaperChanged(string path)
         {
             this.Logger.Debug(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }

@@ -3,7 +3,7 @@ using System.Management.Automation.Host;
 using System.Threading;
 using Castle.Core.Logging;
 
-namespace AutoBot.Agents.PowerShell
+namespace AutoBot.Agents.PowerShell.Host
 {
 
     /// <summary>
@@ -19,8 +19,8 @@ namespace AutoBot.Agents.PowerShell
 
         #region Fields
 
-        private Guid m_InstanceId;
-        private PSHostUserInterface m_UI;
+        private Guid _instanceId;
+        private PSHostUserInterface _ui;
 
         #endregion
 
@@ -75,6 +75,7 @@ namespace AutoBot.Agents.PowerShell
         /// <summary>
         /// Instructs the host to interrupt the currently running pipeline and start a new nested input loop.
         /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
         public override void EnterNestedPrompt()
         {
             throw new NotImplementedException();
@@ -83,6 +84,7 @@ namespace AutoBot.Agents.PowerShell
         /// <summary>
         /// Instructs the host to exit the currently running input loop.
         /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
         public override void ExitNestedPrompt()
         {
             throw new NotImplementedException();
@@ -95,11 +97,11 @@ namespace AutoBot.Agents.PowerShell
         {
             get
             {
-                if (m_InstanceId == Guid.Empty)
+                if (_instanceId == Guid.Empty)
                 {
-                    m_InstanceId = Guid.NewGuid();
+                    _instanceId = Guid.NewGuid();
                 }
-                return m_InstanceId;
+                return _instanceId;
             }
         }
 
@@ -120,6 +122,7 @@ namespace AutoBot.Agents.PowerShell
         /// executable that can perform any of the following operations: read from stdin,
         /// write to stdout, write to stderr, or use any of the Windows console functions.
         /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
         public override void NotifyBeginApplication()
         {
             throw new NotImplementedException();
@@ -131,6 +134,7 @@ namespace AutoBot.Agents.PowerShell
         /// that can perform any of the following operations: read from stdin, write to stdout,
         /// write to stderr, or use any of the Windows console functions.
         /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
         public override void NotifyEndApplication()
         {
             throw new NotImplementedException();
@@ -142,6 +146,7 @@ namespace AutoBot.Agents.PowerShell
         /// root runspace.
         /// </summary>
         /// <param name="exitCode"></param>
+        /// <exception cref="NotImplementedException"></exception>
         public override void SetShouldExit(int exitCode)
         {
             throw new NotImplementedException();
@@ -155,11 +160,11 @@ namespace AutoBot.Agents.PowerShell
         {
             get
             {
-                if (m_UI == null)
+                if (_ui == null)
                 {
-                    m_UI = new UserInterface(this.Logger);
+                    _ui = new UserInterface(this.Logger);
                 }
-                return m_UI;
+                return _ui;
             }
         }
 

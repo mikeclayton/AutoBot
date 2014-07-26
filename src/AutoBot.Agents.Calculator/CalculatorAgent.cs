@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using AutoBot.Core.Chat;
 using AutoBot.Core.Engine;
-using AutoBot.Core.Chat;
 using NCalc;
 
 namespace AutoBot.Agents.Calculator

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using AutoBot.Core.Chat;
+﻿using AutoBot.Core.Chat;
+using System;
 
 namespace AutoBot.ChatClients.Skype
 {
