@@ -10,6 +10,7 @@ using System;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
+using System.Xml;
 
 namespace AutoBot.ChatClients.HipChat
 {
@@ -154,6 +155,17 @@ namespace AutoBot.ChatClients.HipChat
             {
                 Logger.Debug("RECV: Keep alive");
                 return;
+            }
+            if(text.StartsWith("<iq"))
+            {
+                var xml = new XmlDocument();
+                xml.LoadXml(text);
+                var type = xml.SelectSingleNode("iq/@type");
+                if ((type != null) && (type.InnerText == "error"))
+                {
+                    Logger.Error(string.Format("RECV: {0}", text));
+                    return;
+                }
             }
             Logger.Debug(string.Format("RECV: {0}", text));
         }
