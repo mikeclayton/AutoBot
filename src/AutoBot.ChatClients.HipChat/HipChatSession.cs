@@ -102,7 +102,7 @@ namespace AutoBot.ChatClients.HipChat
         private void jabber_OnAuthenticate(object o)
         {
             this.Logger.Info("jabber_OnAuthenticate - Authenticated");
-            _discoManager.BeginFindServiceWithFeature(URI.MUC, hlp_DiscoHandler_FindServiceWithFeature, new object());
+            _discoManager.BeginFindServiceWithFeature(URI.MUC, discoManager_FindServiceWithFeature, new object());
         }
 
         private void jabber_OnAuthError(object sender, XmlElement rp)
@@ -164,7 +164,7 @@ namespace AutoBot.ChatClients.HipChat
 
         private void jabber_OnPresence(object sender, Presence pres)
         {
-            this.Logger.Info("jabber_OnPresence");
+            //this.Logger.Info("jabber_OnPresence");
             if (pres.Type == PresenceType.error)
             {
                 this.Logger.Error(string.Format("PRES: {0}", pres.OuterXml));
@@ -173,7 +173,7 @@ namespace AutoBot.ChatClients.HipChat
 
         private void jabber_OnProtocol(object sender, XmlElement rp)
         {
-            this.Logger.Info("jabber_OnProtocol");
+            //this.Logger.Info("jabber_OnProtocol");
         }
 
         private void jabber_OnReadText(object sender, string text)
@@ -235,21 +235,31 @@ namespace AutoBot.ChatClients.HipChat
 
         #endregion
 
-        #region DiscoHandler Event Handlers
+        #region DiscoManager Event Handlers
 
-        private void hlp_DiscoHandler_FindServiceWithFeature(DiscoManager sender, DiscoNode node, object state)
+        private void discoManager_OnStreamChanged(object sender)
         {
-            if (node == null)
-                return;
-            if (node.Name == "Rooms")
-                _discoManager.BeginGetItems(node, hlp_DiscoHandler_SubscribeToRooms, new object());
+            this.Logger.Info("discoManager_OnStreamChanged");
         }
 
-        private void hlp_DiscoHandler_SubscribeToRooms(DiscoManager sender, DiscoNode node, object state)
+        private void discoManager_FindServiceWithFeature(DiscoManager sender, DiscoNode node, object state)
         {
             if (node == null)
+            {
                 return;
+            }
+            if (node.Name == "Rooms")
+            {
+                _discoManager.BeginGetItems(node, discoManager_SubscribeToRooms, new object());
+            }
+        }
 
+        private void discoManager_SubscribeToRooms(DiscoManager sender, DiscoNode node, object state)
+        {
+            if (node == null)
+            {
+                return;
+            }
             if (node.Children != null && SubscribedRooms == "@all")
             {
                 foreach (DiscoNode dn in node.Children)
@@ -292,8 +302,16 @@ namespace AutoBot.ChatClients.HipChat
 
         private void presenceManager_OnPrimarySessionChange(object sender, JID bare)
         {
+            this.Logger.Info("presenceManager_OnPrimarySessionChange");
             if (bare.Bare.Equals(_jabberClient.JID.Bare, StringComparison.InvariantCultureIgnoreCase))
+            {
                 return;
+            }
+        }
+
+        private void presenceManager_OnStreamChanged(object sender)
+        {
+            this.Logger.Info("presenceManager_OnStreamChanged");
         }
 
         #endregion
@@ -320,7 +338,11 @@ namespace AutoBot.ChatClients.HipChat
                 Stream = _jabberClient
             };
             _discoManager = new DiscoManager();
+            // add presence manager event handlers
             _presenceManager.OnPrimarySessionChange += presenceManager_OnPrimarySessionChange;
+            _presenceManager.OnStreamChanged += presenceManager_OnStreamChanged;
+            _presenceManager.OnPrimarySessionChange += presenceManager_OnPrimarySessionChange;
+            // add jabber client event handlers
             _jabberClient.OnAfterPresenceOut += jabber_OnAfterPresenceOut;
             _jabberClient.OnAuthenticate += jabber_OnAuthenticate;
             _jabberClient.OnAuthError += jabber_OnAuthError;
@@ -341,19 +363,21 @@ namespace AutoBot.ChatClients.HipChat
             _jabberClient.OnStreamHeader += jabber_OnStreamHeader;
             _jabberClient.OnStreamInit += jabber_OnStreamInit;
             _jabberClient.OnWriteText += jabber_OnWriteText;
+            // add discovery manager event handlers
+            _discoManager.OnStreamChanged += discoManager_OnStreamChanged;
             // connect to the HipChat server
-            Logger.Info(string.Format("Connecting to '{0}'", _jabberClient.Server));
+            this.Logger.Info(string.Format("Connecting to '{0}'", _jabberClient.Server));
             _jabberClient.Connect();
             var retryCountLimit = 10;
             while (!_jabberClient.IsAuthenticated && retryCountLimit > 0)
             {
-                Logger.Info(string.Format("Waiting..."));
+                this.Logger.Info(string.Format("Waiting..."));
                 retryCountLimit--;
                 Thread.Sleep(1000);
             }
             if (_jabberClient.IsAuthenticated)
             {
-                Logger.Info(string.Format("Authenticated as '{0}'", _jabberClient.User));
+                this.Logger.Info(string.Format("Authenticated as '{0}'", _jabberClient.User));
             }
         }
 
@@ -407,7 +431,7 @@ namespace AutoBot.ChatClients.HipChat
 
         private string RemoveMentionFromMessage(string chatText)
         {
-            // TODO: Remove all @'s
+            // TODO: Remove all @mentions
             return chatText.Replace(this.MentionName, string.Empty).Trim();
         }
 

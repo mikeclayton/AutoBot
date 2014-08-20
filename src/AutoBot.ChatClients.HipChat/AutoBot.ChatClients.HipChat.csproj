@@ -29,6 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Core">
@@ -36,9 +37,6 @@
     </Reference>
     <Reference Include="Castle.Windsor">
       <HintPath>..\..\lib\packages\Castle.Windsor.3.2.0\lib\net40\Castle.Windsor.dll</HintPath>
-    </Reference>
-    <Reference Include="HipChat.Net">
-      <HintPath>..\..\lib\packages\HipChat.Net.1.0\lib\net40\HipChat.Net.dll</HintPath>
     </Reference>
     <Reference Include="jabber-net">
       <HintPath>..\..\lib\jabber-net.dll</HintPath>
