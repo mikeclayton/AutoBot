@@ -7,36 +7,66 @@
   </configSections>
 
   <castle>
+
     <facilities>
       <facility type="Castle.Facilities.Logging.LoggingFacility, Castle.Facilities.Logging"
                 loggingApi="log4net"
                 configFile="App.config" />
     </facilities>
+
     <components>
-      <!-- hipchat -->
+
+      <!-- autobot engine -->
+      <component service="AutoBot.Core.Engine.AutoBotEngine"
+                 type="AutoBot.Core.Engine.AutoBotEngine, AutoBot.Core">
+      </component>
+
+      <!-- uncomment to enable hipchat client -->
       <component service="AutoBot.Core.Chat.IChatSession"
                  type="AutoBot.ChatClients.HipChat.HipChatSession, AutoBot.ChatClients.HipChat">
-        <parameters>
-          <Server>chat.hipchat.com</Server>
-          <Username>1234_56789</Username>
-          <Password>password</Password>
-          <MentionName>@autobot</MentionName>
-          <NickName></NickName>
-          <Resource>bot</Resource>
-          <!--comma-delimited list of room id's-->
-          <SubscribedRooms>@all</SubscribedRooms>
+          <parameters>
+            <!--
+
+              to determine values for the parameters below, log on to the
+              hipchat web interface at https://kingsland.hipchat.com/chat,
+              then view the following pages:
+
+                https://kingsland.hipchat.com/account
+                https://kingsland.hipchat.com/account/xmpp
+
+            -->
+            <Server>chat.hipchat.com</Server>
+            <Username>1234_56789</Username>
+            <Password>password</Password>
+            <MentionName>@autobot</MentionName>
+            <NickName>Nickname</NickName>
+            <Resource>bot</Resource>
+            <!-- comma-delimited list of room id's, or "@all" for all rooms -->
+            <SubscribedRooms>@all</SubscribedRooms>
         </parameters>
       </component>
-      <!-- skype -->
+
+      <!-- uncomment to enable skype client -->
       <!--
       <component service="AutoBot.Core.Chat.IChatSession"
                  type="AutoBot.ChatClients.Skype.SkypeSession, AutoBot.ChatClients.Skype">
       </component>      
       -->
-      <component service="AutoBot.Core.Engine.BotEngine"
-                 type="AutoBot.Core.Engine.BotEngine, AutoBot.Core">
+
+      <!-- uncomment to enable powershell agent -->
+      <component service="AutoBot.Core.Engine.IAutoBotAgent"
+                 type="AutoBot.Agents.PowerShell.PowerShellAgent, AutoBot.Agents.PowerShell">
       </component>
+
+      <!-- uncomment to enable calculator agent -->
+      <!--
+      <component service="AutoBot.Core.Engine.IAutoBotAgent"
+                 type="AutoBot.Agents.Calculator.CalculatorAgent, AutoBot.Agents.Calculator">
+      </component>
+      -->
+
     </components>
+
   </castle>
 
   <startup>

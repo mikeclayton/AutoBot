@@ -94,91 +94,143 @@ namespace AutoBot.ChatClients.HipChat
 
         #region JabberClient Event Handlers
 
-        private void jabber_OnMessage(object sender, Message msg)
+        private void jabber_OnAfterPresenceOut(object sender, Presence pres)
         {
-            Logger.Debug(string.Format("RECV From: {0}@{1} : {2}", msg.From.User, msg.From.Server, msg.Body));
-            this.OnMessageReceived(msg);
+            this.Logger.Info("jabber_OnAfterPresenceOut");
         }
 
-        private bool jabber_OnRegisterInfo(object sender, Register register)
+        private void jabber_OnAuthenticate(object o)
         {
-            return true;
+            this.Logger.Info("jabber_OnAuthenticate - Authenticated");
+            _discoManager.BeginFindServiceWithFeature(URI.MUC, hlp_DiscoHandler_FindServiceWithFeature, new object());
         }
 
-        private void jabber_OnRegistered(object sender, IQ iq)
+        private void jabber_OnAuthError(object sender, XmlElement rp)
         {
-            _jabberClient.Login();
+            this.Logger.Info("jabber_OnAuthError");
+        }
+
+        private void jabber_OnBeforePresenceOut(object sender, Presence pres)
+        {
+            this.Logger.Info("jabber_OnBeforePresenceOut");
+        }
+
+        private void jabber_OnConnect(object o, StanzaStream s)
+        {
+            this.Logger.Info("jabber_OnConnect - Connecting");
+            var client = (JabberClient)o;
         }
 
         private void jabber_OnDisconnect(object sender)
         {
             this.Logger.Info("jabber_OnDisconnect - Disconnecting");
-
         }
 
-        private void jabber_OnStreamInit(object o, ElementStream elementStream)
+        private void jabber_OnError(object o, Exception ex)
         {
-            var client = (JabberClient)o;
-            _discoManager.Stream = client;
-        }
-
-        private void jabber_OnConnect(object o, StanzaStream s)
-        {
-            Logger.Info("jabber_OnConnect - Connecting");
-            var client = (JabberClient)o;
-        }
-
-        private void jabber_OnAuthenticate(object o)
-        {
-            Logger.Info("Authenticated");
-            _discoManager.BeginFindServiceWithFeature(URI.MUC, hlp_DiscoHandler_FindServiceWithFeature, new object());
+            this.Logger.Info("jabber_OnError");
+            this.Logger.Error("ERROR!:", ex);
+            throw ex;
         }
 
         private bool jabber_OnInvalidCertificate(object o, X509Certificate cert, X509Chain chain, SslPolicyErrors errors)
         {
             // the current jabber server has an invalid certificate,
             // but override validation and accept it anyway.
-            Logger.Info("Validating certificate");
+            this.Logger.Info("jabber_OnInvalidCertificate");
+            this.Logger.Info("Validating certificate");
             return true;
         }
 
-        private void jabber_OnError(object o, Exception ex)
+        private void jabber_OnIQ(object sender, IQ iq)
         {
-            Logger.Error("ERROR!:", ex);
-            throw ex;
+            //this.Logger.Info("jabber_OnIQ");
+            if (iq.Type == IQType.error)
+            {
+                this.Logger.Error(string.Format("IQ  : {0}", iq.OuterXml));
+            }
+        }
+
+        private void jabber_OnLoginRequired(object sender)
+        {
+            this.Logger.Info("jabber_OnLoginRequired");
+        }
+
+        private void jabber_OnMessage(object sender, Message msg)
+        {
+            this.Logger.Debug(string.Format("RECV From: {0}@{1} : {2}", msg.From.User, msg.From.Server, msg.Body));
+            this.OnMessageReceived(msg);
+        }
+
+        private void jabber_OnPresence(object sender, Presence pres)
+        {
+            this.Logger.Info("jabber_OnPresence");
+            if (pres.Type == PresenceType.error)
+            {
+                this.Logger.Error(string.Format("PRES: {0}", pres.OuterXml));
+            }
+        }
+
+        private void jabber_OnProtocol(object sender, XmlElement rp)
+        {
+            this.Logger.Info("jabber_OnProtocol");
         }
 
         private void jabber_OnReadText(object sender, string text)
         {
+            //this.Logger.Info("jabber_OnReadText");
             // ignore keep-alive spaces
             if (text == " ")
             {
-                Logger.Debug("RECV: Keep alive");
+                this.Logger.Debug("RECV: Keep alive");
                 return;
             }
-            if(text.StartsWith("<iq"))
-            {
-                var xml = new XmlDocument();
-                xml.LoadXml(text);
-                var type = xml.SelectSingleNode("iq/@type");
-                if ((type != null) && (type.InnerText == "error"))
-                {
-                    Logger.Error(string.Format("RECV: {0}", text));
-                    return;
-                }
-            }
-            Logger.Debug(string.Format("RECV: {0}", text));
+            this.Logger.Debug(string.Format("RECV: {0}", text));
+        }
+
+        private void jabber_OnRegistered(object sender, IQ iq)
+        {
+            this.Logger.Info("jabber_OnRegistered");
+            _jabberClient.Login();
+        }
+
+        private bool jabber_OnRegisterInfo(object sender, Register register)
+        {
+            this.Logger.Info("jabber_OnRegisterInfo");
+            return true;
+        }
+
+        private void jabber_OnStreamInit(object o, ElementStream elementStream)
+        {
+            //this.Logger.Info("jabber_OnStreamInit");
+            var client = (JabberClient)o;
+            _discoManager.Stream = client;
+        }
+
+        private void jabber_OnStreamError(object sender, XmlElement rp)
+        {
+            // event handled in jabber_OnMessage
+            this.Logger.Info("jabber_OnStreamError");
+            //this.Logger.Error(string.Format("STER: {0}", rp.OuterXml));
+        }
+
+        private void jabber_OnStreamHeader(object sender, XmlElement rp)
+        {
+            // event handled in jabber_OnMessage
+            //this.Logger.Info("jabber_OnStreamHeader");
+            //this.Logger.Debug(string.Format("STHD: {0}", rp.OuterXml));
         }
 
         private void jabber_OnWriteText(object sender, string text)
         {
+            //this.Logger.Info("jabber_OnWriteText");
             // ignore keep-alive spaces
             if (text == " ")
             {
-                Logger.Debug("RECV: Keep alive");
+                this.Logger.Debug("RECV: Keep alive");
                 return;
             }
-            Logger.Debug(string.Format("SEND: {0}", text));
+            this.Logger.Debug(string.Format("SEND: {0}", text));
         }
 
         #endregion
@@ -269,17 +321,26 @@ namespace AutoBot.ChatClients.HipChat
             };
             _discoManager = new DiscoManager();
             _presenceManager.OnPrimarySessionChange += presenceManager_OnPrimarySessionChange;
-            _jabberClient.OnConnect += jabber_OnConnect;
+            _jabberClient.OnAfterPresenceOut += jabber_OnAfterPresenceOut;
             _jabberClient.OnAuthenticate += jabber_OnAuthenticate;
-            _jabberClient.OnInvalidCertificate += jabber_OnInvalidCertificate;
-            _jabberClient.OnError += jabber_OnError;
-            _jabberClient.OnReadText += jabber_OnReadText;
-            _jabberClient.OnWriteText += jabber_OnWriteText;
-            _jabberClient.OnStreamInit += jabber_OnStreamInit;
+            _jabberClient.OnAuthError += jabber_OnAuthError;
+            _jabberClient.OnBeforePresenceOut += jabber_OnBeforePresenceOut;
+            _jabberClient.OnConnect += jabber_OnConnect;
             _jabberClient.OnDisconnect += jabber_OnDisconnect;
+            _jabberClient.OnError += jabber_OnError;
+            _jabberClient.OnInvalidCertificate += jabber_OnInvalidCertificate;
+            _jabberClient.OnIQ += jabber_OnIQ;
+            _jabberClient.OnLoginRequired += jabber_OnLoginRequired;
+            _jabberClient.OnMessage += jabber_OnMessage;
+            _jabberClient.OnPresence += jabber_OnPresence;
+            _jabberClient.OnProtocol += jabber_OnProtocol;
+            _jabberClient.OnReadText += jabber_OnReadText;
             _jabberClient.OnRegistered += jabber_OnRegistered;
             _jabberClient.OnRegisterInfo += jabber_OnRegisterInfo;
-            _jabberClient.OnMessage += jabber_OnMessage;
+            _jabberClient.OnStreamError += jabber_OnStreamError;
+            _jabberClient.OnStreamHeader += jabber_OnStreamHeader;
+            _jabberClient.OnStreamInit += jabber_OnStreamInit;
+            _jabberClient.OnWriteText += jabber_OnWriteText;
             // connect to the HipChat server
             Logger.Info(string.Format("Connecting to '{0}'", _jabberClient.Server));
             _jabberClient.Connect();
