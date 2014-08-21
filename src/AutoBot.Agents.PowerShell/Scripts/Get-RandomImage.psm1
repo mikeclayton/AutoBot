@@ -1,43 +1,54 @@
-﻿$ErrorActionPreference = "Stop";
+﻿function Get-RandomImage()
+{
 
-function Get-RandomImage() { 
-<#
-.SYNOPSIS
+	<#
+
+	.SYNOPSIS
     Returns a random image from a Google image search for a given search term.
-.DESCRIPTION
+
+	.DESCRIPTION
     Returns a random image from a Google image search for a given search term.
-.NOTES
+
+	.NOTES
     Name: Get-RandomImage
     Author: Steve Garrett, Lloyd Holman
     DateCreated: 21/11/2011
-.EXAMPLE
+
+	.EXAMPLE
     Get-RandomImage coolio
-Description
-------------
-Returns a picture of the rather awesome Coolio, hopefully!
 
+	#>
 
-#>
-	param($term)
+	param
+	(
+
+		[Parameter(Mandatory=$true)]
+		[string] $term
+
+	)
 	
-	Begin 
+	$ErrorActionPreference = "Stop";
+	Set-StrictMode -Version "Latest";
+
+	try
 	{
-			
+
+		$url = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=$term";
+		$html = (new-object System.Net.WebClient).DownloadString($url);
+		#write-host $html;
+
+		$regex = [regex] """url"":""([^""]+)""";
+		$result = $regex.Matches($html) | get-random | % { $_.Groups[1].Value };
+
+		return ($result | Out-String);
+
 	}
-	Process
+	catch [Exception]
 	{
-		Try	
-		{
-			$html = (New-Object System.Net.WebClient).DownloadString("https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=$term")
-			#Write-Output $html
-			$regex = [regex] """url"":""([^""]+)"""
-			$result = $regex.Matches($html) | get-random |% { $_.Groups[1].Value } 
-		}
-		Catch [Exception] {
-			Write-Host $_.Exception.ToString()
-		}
-	}			
-	End {
-		return $result | Out-String
+
+		$ex = $_.psbase.Exception;
+		write-host $ex.ToString();
+
 	}
+
 }

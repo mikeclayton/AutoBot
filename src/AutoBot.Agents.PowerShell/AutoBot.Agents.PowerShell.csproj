@@ -59,9 +59,9 @@
     <Content Include="Scripts\Get-RandomImage.psm1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Scripts\Set-Profile.psm1">
+    <None Include="Scripts\Get-Prediction.psm1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AutoBot.Core\AutoBot.Core.csproj">

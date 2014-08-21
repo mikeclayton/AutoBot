@@ -411,9 +411,9 @@ namespace AutoBot.ChatClients.HipChat
             }
             // extract the chat text
             var commandText = (message.Body == null) ? message.X.InnerText.Trim() : message.Body.Trim();
-            if ((message.Type == MessageType.groupchat) && commandText.Trim().StartsWith(this.MentionName))
+            if ((message.Type == MessageType.groupchat) && commandText.StartsWith(this.MentionName))
             {
-                commandText = this.RemoveMentionFromMessage(commandText);
+                commandText = this.RemoveMentionsFromMessage(commandText);
             }
             // build the chat message and response to pass to the event handler
             var chatMessage = new HipChatMessage(message.Type, message.Body, commandText);
@@ -429,7 +429,7 @@ namespace AutoBot.ChatClients.HipChat
             _jabberClient.Message(messageType, replyTo, message);
         }
 
-        private string RemoveMentionFromMessage(string chatText)
+        private string RemoveMentionsFromMessage(string chatText)
         {
             // TODO: Remove all @mentions
             return chatText.Replace(this.MentionName, string.Empty).Trim();
