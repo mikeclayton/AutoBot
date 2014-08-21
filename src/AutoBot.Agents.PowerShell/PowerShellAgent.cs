@@ -21,12 +21,7 @@ namespace AutoBot.Agents.PowerShell
         {
             // copy the parameters locally so the OnWrite handler can access them
             this.Logger = logger;
-            var assemblyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            if (string.IsNullOrEmpty(assemblyPath))
-            {
-                throw new InvalidOperationException();
-            }
-            this.ScriptPath = Path.Combine(assemblyPath, "Scripts");
+            this.ScriptPath = this.GetScriptPath();
         }
 
         #endregion
@@ -120,6 +115,18 @@ namespace AutoBot.Agents.PowerShell
         #endregion
 
         #region Helpers
+
+        private string GetScriptPath()
+        {
+            // get the path to the entry assembly
+            var assemblyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            if (string.IsNullOrEmpty(assemblyPath))
+            {
+                throw new InvalidOperationException();
+            }
+            // append "Scripts"
+            return Path.Combine(assemblyPath, "Scripts");
+        }
 
         private PowerShellCommand ParseCommand(string chatText)
         {
